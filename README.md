@@ -1,8 +1,10 @@
 <p align="center">
-  <img src="unraid/icon.png" alt="Subtitle Edit logo" width="112">
+  <a href="https://github.com/SubtitleEdit/subtitleedit"><img src="https://avatars.githubusercontent.com/u/3008853?s=60&amp;v=4" alt="Subtitle Edit" height="80"></a>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://unraid.net/"><img src="https://drive.google.com/thumbnail?id=1Q_6rprU_k6c6JeETcrkwqAq3weu7_zu-&amp;sz=w240" alt="Unraid" height="80"></a>
 </p>
 
-<h1 align="center">Subtitle Edit for Docker &amp; Unraid</h1>
+<h1 align="center">Subtitle Edit for Unraid &amp; Docker</h1>
 
 <p align="center">
   Run the native Linux version of Subtitle Edit in a web browser.
@@ -27,8 +29,8 @@ Linux Docker host.
 ## Contents
 
 - [Features](#features)
-- [Quick start with Docker](#quick-start-with-docker)
 - [Quick start on Unraid](#quick-start-on-unraid)
+- [Quick start with Docker](#quick-start-with-docker)
 - [Stable or beta](#stable-or-beta)
 - [CPU and GPU setup](#cpu-and-gpu-setup)
 - [Files and persistence](#files-and-persistence)
@@ -46,6 +48,31 @@ Linux Docker host.
 - Stable and beta release channels
 - CPU rendering plus optional Intel, AMD, or NVIDIA GPU acceleration
 - Direct HTTPS access or an internal HTTP endpoint for a reverse proxy
+
+## Quick start on Unraid
+
+The template is being prepared for Community Applications. Until it is listed,
+install the user template from an Unraid terminal:
+
+```bash
+curl -fsSL \
+  https://raw.githubusercontent.com/pegasbur/subtitle-edit/main/unraid/my-subtitle-edit.xml \
+  -o /boot/config/plugins/dockerMan/templates-user/my-subtitle-edit.xml
+```
+
+Then open **Docker > Add Container** and select **Subtitle Edit** from the
+template list.
+
+During installation:
+
+1. Choose `latest` for normal use or `beta` for testing.
+2. Enter a strong **Web password**.
+3. Confirm the appdata and media paths.
+4. Choose the GPU setup described below, or leave GPU access disabled.
+5. Apply the template and open its WebUI.
+
+The default address is `https://UNRAID-IP:3001`. The host port can be changed
+if `3001` is already used by another container.
 
 ## Quick start with Docker
 
@@ -82,30 +109,20 @@ The direct WebUI uses a self-signed certificate, so the browser will initially
 display a certificate warning. For Intel or AMD acceleration, add
 `--device=/dev/dri`. NVIDIA setup is shown in [CPU and GPU setup](#cpu-and-gpu-setup).
 
-## Quick start on Unraid
+### macOS Docker Desktop
 
-The template is being prepared for Community Applications. Until it is listed,
-install the user template from an Unraid terminal:
+Intel macOS Docker Desktop has been tested successfully. Docker Desktop cannot
+pass the Mac GPU to this Linux container, so use CPU rendering and X11:
 
-```bash
-curl -fsSL \
-  https://raw.githubusercontent.com/pegasbur/subtitle-edit/main/unraid/my-subtitle-edit.xml \
-  -o /boot/config/plugins/dockerMan/templates-user/my-subtitle-edit.xml
+```text
+-e PIXELFLUX_WAYLAND=false -e AUTO_GPU=false
 ```
 
-Then open **Docker > Add Container** and select **Subtitle Edit** from the
-template list.
-
-During installation:
-
-1. Choose `latest` for normal use or `beta` for testing.
-2. Enter a strong **Web password**.
-3. Confirm the appdata and media paths.
-4. Choose the GPU setup described below, or leave GPU access disabled.
-5. Apply the template and open its WebUI.
-
-The default address is `https://UNRAID-IP:3001`. The host port can be changed
-if `3001` is already used by another container.
+Use paths under `$HOME` for local files. A GOZTEPE or other SMB share must first
+be mounted by macOS and then bind-mounted into the container, for example
+`--mount type=bind,source=/Volumes/data,target=/data`. CPU encoding can be slow
+on an older Mac, especially at Retina resolution; lowering the stream to
+1920×1080 and 30 FPS improves responsiveness.
 
 ## Stable or beta
 
@@ -115,20 +132,20 @@ if `3001` is already used by another container.
 | `ghcr.io/pegasbur/subtitle-edit:beta` | Latest tested beta; useful for new Linux fixes and features |
 
 Use a separate `/config` directory when evaluating the beta, such as
-`/srv/subtitle-edit-beta/config` or
-`/mnt/user/appdata/subtitle-edit-beta`. A beta may change settings in ways that
-are not safe to downgrade.
+`/mnt/user/appdata/subtitle-edit-beta` on Unraid or
+`/srv/subtitle-edit-beta/config` on Docker. A beta may change settings in ways
+that are not safe to downgrade.
 
 ## CPU and GPU setup
 
 A GPU is optional. Subtitle Edit works with CPU/software rendering, although
 the browser stream and video playback may use more CPU.
 
-| Hardware | Docker option / Unraid Extra Parameters |
-|---|---|
-| CPU only | `--shm-size=1g` |
-| Intel or AMD | `--device=/dev/dri --shm-size=1g` |
-| NVIDIA | `--runtime=nvidia --gpus all --shm-size=1g` |
+| Hardware | Unraid configuration | Docker options |
+|---|---|---|
+| CPU only | Extra Parameters: `--shm-size=1g` | `--shm-size=1g` |
+| Intel or AMD | GPU device: `/dev/dri` | `--device=/dev/dri --shm-size=1g` |
+| NVIDIA | Extra Parameters: `--runtime=nvidia --gpus all --shm-size=1g` | `--runtime=nvidia --gpus all --shm-size=1g` |
 
 On Unraid, Intel/AMD users can fill the **Intel/AMD GPU device** field with
 `/dev/dri`. NVIDIA users should leave that field blank and enter the NVIDIA
@@ -145,12 +162,12 @@ optional OCR engine use the GPU.
 
 ## Files and persistence
 
-The container paths are the same on Docker and Unraid:
+The container paths are the same on Unraid and Docker:
 
-| Container path | Example Unraid host path | Purpose |
+| Unraid host path | Container path | Purpose |
 |---|---|---|
-| `/config` | `/mnt/user/appdata/subtitle-edit` | Settings, desktop state, OCR data, and downloaded models |
-| `/data` | `/mnt/user/data` | Media and subtitle files |
+| `/mnt/user/appdata/subtitle-edit` | `/config` | Settings and models |
+| `/mnt/user/data` | `/data` | Media and subtitles |
 
 Open media from `/data` inside Subtitle Edit. Files stored elsewhere inside the
 container may disappear when the image is replaced. Updating the container does
@@ -174,6 +191,15 @@ specific engine and downloaded package support it.
 
 ## Updating
 
+### Unraid
+
+Use Unraid's normal **Check for Updates** and **Update** controls. Settings,
+downloaded OCR models, and media remain in their mapped folders.
+
+Changing from `latest` to `beta` selects the tested beta image. Changing back to
+`latest` is not recommended with the same appdata directory after a beta has
+migrated its settings.
+
 ### Docker
 
 Pull the chosen channel, remove the old container, and recreate it with the same
@@ -185,15 +211,6 @@ docker pull ghcr.io/pegasbur/subtitle-edit:latest
 
 Docker Compose users can use `docker compose pull` followed by
 `docker compose up -d`.
-
-### Unraid
-
-Use Unraid's normal **Check for Updates** and **Update** controls. Settings,
-downloaded OCR models, and media remain in their mapped folders.
-
-Changing from `latest` to `beta` selects the tested beta image. Changing back to
-`latest` is not recommended with the same appdata directory after a beta has
-migrated its settings.
 
 ## Network access and security
 
