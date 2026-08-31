@@ -113,7 +113,12 @@ hardware requires additional configuration; see
 ### macOS Docker Desktop
 
 Intel macOS Docker Desktop has been tested successfully with CPU rendering and
-X11 by adding `-e PIXELFLUX_WAYLAND=false -e AUTO_GPU=false`.
+X11; in the Docker command above, replace `-e AUTO_GPU=true` with:
+
+```bash
+  -e PIXELFLUX_WAYLAND=false \
+  -e AUTO_GPU=false \
+```
 
 ## Stable or beta
 
@@ -135,7 +140,7 @@ the browser stream and video playback may use more CPU.
 | Hardware | Unraid configuration | Docker options |
 |---|---|---|
 | CPU only | Extra Parameters: `--shm-size=1g` | `--shm-size=1g` |
-| Intel or AMD | GPU device: `/dev/dri` | `--device=/dev/dri --shm-size=1g` |
+| Intel or AMD | GPU device: `/dev/dri`<br>Extra Parameters: `--shm-size=1g` | `--device=/dev/dri --shm-size=1g` |
 | NVIDIA | Extra Parameters: `--runtime=nvidia --gpus all --shm-size=1g` | `--runtime=nvidia --gpus all --shm-size=1g` |
 
 On Unraid, Intel/AMD users can fill the **Intel/AMD GPU device** field with
