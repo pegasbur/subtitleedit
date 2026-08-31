@@ -12,22 +12,22 @@ container, but other Docker platforms are not currently supported targets.
 
 | Component | Pinned version |
 |---|---:|
-| LinuxServer Selkies | dc0f730c-ls132 |
+| LinuxServer Selkies | Ubuntu Resolute (see `versions.env`) |
 | Subtitle Edit stable | 5.1.0 |
 | Subtitle Edit beta | 5.2.0-beta30 |
-| FFmpeg/FFprobe | 9.0.1 |
-| libplacebo | 7.360.1 |
-| MPV/libmpv | 0.41.0 |
-| Tesseract OCR | 5.5.3 |
+| FFmpeg/FFprobe | Ubuntu Resolute package (currently 8.0.1) |
+| libplacebo | Ubuntu Resolute package (currently 7.360.0) |
+| MPV/libmpv | Ubuntu Resolute package (currently 0.41.0) |
+| Tesseract OCR | Ubuntu Resolute package (currently 5.5.0) |
 
-The authoritative pins and SHA-256 values are in `versions.env`.
+The authoritative Subtitle Edit release hashes and immutable Selkies image pin
+are in `versions.env`.
 
-libplacebo, FFmpeg, and MPV are built together so the renderer meets FFmpeg's
-minimum version and libmpv uses the same FFmpeg ABI. The
-build enables the mainstream video, audio, subtitle, optical-media, Intel
-QSV/VA-API, Vulkan, OpenCL, and Nvidia NVENC interfaces available from the
-Debian Trixie/Selkies dependency set. Tesseract includes English and
-orientation/script data by default.
+FFmpeg, libplacebo, MPV/libmpv, and Tesseract are installed from Ubuntu
+Resolute's repositories. Ubuntu builds and updates these libraries as a
+compatible distribution set, avoiding a separately maintained multimedia ABI
+inside this image. Tesseract includes English and orientation/script data by
+default.
 
 Large optional engines such as PaddleOCR, CrispEmbed, Whisper, and llama.cpp
 remain on-demand downloads. Subtitle Edit stores them under `/config`, so they
@@ -91,8 +91,9 @@ For Intel or AMD acceleration, set the optional Unraid device field to:
 ```
 
 This lets Selkies use the render device and makes FFmpeg/MPV VA-API available.
-Intel QSV support is compiled into FFmpeg as well. Nvidia use additionally
-requires the Unraid Nvidia driver/runtime configuration.
+Hardware interfaces depend on Ubuntu's FFmpeg package configuration and the
+mapped host device. Nvidia use additionally requires the Unraid Nvidia
+driver/runtime configuration.
 
 ## Tesseract and optional OCR models
 
@@ -130,10 +131,9 @@ Build the beta image:
 ./build.sh beta
 ```
 
-The first source build compiles FFmpeg, MPV, and Tesseract and will take much
-longer than the old Debian-package-only build. Docker BuildKit caches each
-component stage, so changing only Subtitle Edit does not rebuild the media
-stack.
+The first build downloads the Ubuntu Selkies base, Ubuntu runtime packages, and
+the selected Subtitle Edit archive. Later builds normally reuse Docker
+BuildKit's cached layers when these inputs have not changed.
 
 Local tags follow this pattern:
 
@@ -192,12 +192,18 @@ scripts/update-subtitle-edit.sh stable
 scripts/update-subtitle-edit.sh beta
 ```
 
-Selkies, libplacebo, FFmpeg, MPV, and Tesseract upgrades require editing
-`versions.env`, incrementing `IMAGE_REVISION` when appropriate, rebuilding,
-and completing the playback/OCR test checklist. The Selkies tag and immutable
-manifest digest are both recorded. These components are intentionally not
-upgraded unattended because the complete desktop and multimedia stack must be
-tested together.
+Update the Selkies version and immutable manifest digest automatically:
+
+```bash
+scripts/update-selkies.sh
+```
+
+Review the resulting `versions.env` change, increment `IMAGE_REVISION` for a
+published rebuild, and complete the playback/OCR test checklist. FFmpeg,
+libplacebo, MPV, and Tesseract follow the Ubuntu Resolute repositories visible
+during the image build. Rebuilding against an updated Selkies base obtains the
+current matched Ubuntu package set; those versions are confirmed from the
+finished image before release.
 
 ## Release validation
 

@@ -10,11 +10,11 @@
   <Privileged>false</Privileged>
   <Support>https://github.com/pegasbur/subtitle-edit/issues</Support>
   <Project>https://github.com/pegasbur/subtitle-edit</Project>
-  <Overview>Unofficial Unraid packaging of native Linux Subtitle Edit in a Selkies browser desktop. Includes a pinned FFmpeg/MPV multimedia stack, Tesseract OCR, persistent settings and optional GPU access. No Wine or VM is used.</Overview>
+  <Overview>Unofficial Unraid packaging of native Linux Subtitle Edit in a Selkies browser desktop. Includes Ubuntu's matched FFmpeg/MPV multimedia stack, Tesseract OCR, persistent settings and optional GPU access. No Wine or VM is used.</Overview>
   <Category>MediaApp:Video Tools:</Category>
   <WebUI>https://[IP]:[PORT:3001]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/pegasbur/subtitle-edit/main/unraid/my-subtitle-edit.xml</TemplateURL>
-  <Icon>https://raw.githubusercontent.com/SubtitleEdit/subtitleedit/main/src/libse/Icon.png</Icon>
+  <Icon>https://raw.githubusercontent.com/pegasbur/subtitle-edit/main/unraid/icon.png</Icon>
   <ExtraParams>--shm-size=1g</ExtraParams>
   <PostArgs/>
   <CPUset/>
