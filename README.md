@@ -32,6 +32,7 @@ Linux Docker host.
 - [Quick start on Unraid](#quick-start-on-unraid)
 - [Quick start with Docker](#quick-start-with-docker)
 - [Stable or beta](#stable-or-beta)
+- [Included software](#included-software)
 - [CPU and GPU setup](#cpu-and-gpu-setup)
 - [Files and persistence](#files-and-persistence)
 - [OCR engines](#ocr-engines)
@@ -131,6 +132,22 @@ Use a separate `/config` directory when evaluating the beta, such as
 `/mnt/user/appdata/subtitle-edit-beta` on Unraid or
 `/srv/subtitle-edit-beta/config` on Docker. A beta may change settings in ways
 that are not safe to downgrade.
+
+## Included software
+
+| Component | Version in current images |
+|---|---:|
+| [LinuxServer Selkies](https://github.com/linuxserver/docker-baseimage-selkies) | `42176703-ls42` (Ubuntu Resolute) |
+| [Subtitle Edit](https://github.com/SubtitleEdit/subtitleedit) stable | `5.1.0` |
+| [Subtitle Edit](https://github.com/SubtitleEdit/subtitleedit) beta | `5.2.0-beta30` |
+| [FFmpeg/FFprobe](https://github.com/FFmpeg/FFmpeg) | `8.0.1` (Ubuntu package) |
+| [libplacebo](https://code.videolan.org/videolan/libplacebo) | `7.360.0` (Ubuntu package) |
+| [MPV/libmpv](https://github.com/mpv-player/mpv) | `0.41.0` (Ubuntu package) |
+| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) | `5.5.0` (Ubuntu package) |
+
+The Selkies image and Subtitle Edit releases are pinned in `versions.env`.
+The multimedia and OCR components are supplied as a compatible package set by
+the Ubuntu Resolute base image.
 
 ## CPU and GPU setup
 
