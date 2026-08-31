@@ -68,6 +68,8 @@ jobs:
             echo "SUBTITLE_EDIT_ICON_SHA256=${SUBTITLE_EDIT_ICON_SHA256}"
             echo "FFMPEG_VERSION=${FFMPEG_VERSION}"
             echo "FFMPEG_SHA256=${FFMPEG_SHA256}"
+            echo "LIBPLACEBO_VERSION=${LIBPLACEBO_VERSION}"
+            echo "LIBPLACEBO_SHA256=${LIBPLACEBO_SHA256}"
             echo "MPV_VERSION=${MPV_VERSION}"
             echo "MPV_SHA256=${MPV_SHA256}"
             echo "TESSERACT_VERSION=${TESSERACT_VERSION}"

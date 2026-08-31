@@ -6,6 +6,8 @@ FROM ${BASE_IMAGE} AS media-builder
 
 ARG FFMPEG_VERSION=9.0.1
 ARG FFMPEG_SHA256=cf38e0e28c7e5605942c4a77755349b0145804a397af37eb1fb4c77cb237f635
+ARG LIBPLACEBO_VERSION=7.360.1
+ARG LIBPLACEBO_SHA256=d05fdf90bea2f629eaa2d115e909fd356388ac639e54f77b87a018a6d76224bd
 ARG MPV_VERSION=0.41.0
 ARG MPV_SHA256=ee21092a5ee427353392360929dc64645c54479aefdb5babc5cfbb5fad626209
 ARG TESSERACT_VERSION=5.5.3
@@ -25,6 +27,7 @@ RUN \
     ca-certificates \
     curl \
     ffmpeg \
+    glslang-dev \
     libaom-dev \
     libarchive-dev \
     libass-dev \
@@ -40,13 +43,13 @@ RUN \
     libgnutls28-dev \
     libharfbuzz-dev \
     libicu-dev \
+    liblcms2-dev \
     libleptonica-dev \
     libmp3lame-dev \
     libmpv-dev \
     libopenjp2-7-dev \
     libopus-dev \
     libpango1.0-dev \
-    libplacebo-dev \
     libpng-dev \
     libsoxr-dev \
     libsrt-gnutls-dev \
@@ -62,6 +65,7 @@ RUN \
     libx264-dev \
     libx265-dev \
     libxml2-dev \
+    libxxhash-dev \
     libzimg-dev \
     libzvbi-dev \
     meson \
@@ -69,12 +73,40 @@ RUN \
     ninja-build \
     ocl-icd-opencl-dev \
     pkgconf \
+    python3-glad \
+    python3-jinja2 \
     python3-docutils \
+    python3-setuptools \
+    spirv-tools \
     yasm \
     zlib1g-dev && \
   rm -rf /var/lib/apt/lists/*
 
 WORKDIR /tmp/build
+
+RUN \
+  echo "**** build libplacebo ${LIBPLACEBO_VERSION} ****" && \
+  curl -fL --retry 3 \
+    -o libplacebo.tar.gz \
+    "https://github.com/haasn/libplacebo/archive/refs/tags/v${LIBPLACEBO_VERSION}.tar.gz" && \
+  echo "${LIBPLACEBO_SHA256}  libplacebo.tar.gz" | sha256sum -c - && \
+  mkdir libplacebo && \
+  tar --no-same-owner --strip-components=1 -xzf libplacebo.tar.gz -C libplacebo && \
+  cd libplacebo && \
+  meson setup build \
+    --prefix=/opt/media \
+    --libdir=lib \
+    --buildtype=release \
+    -Ddemos=false \
+    -Dtests=false \
+    -Dvulkan=enabled \
+    -Dopengl=enabled \
+    -Dglslang=enabled \
+    -Dshaderc=disabled && \
+  meson compile -C build -j "$(nproc)" && \
+  meson install -C build && \
+  mkdir -p /opt/media/share/licenses/libplacebo && \
+  cp LICENSE /opt/media/share/licenses/libplacebo/
 
 RUN \
   echo "**** build FFmpeg ${FFMPEG_VERSION} ****" && \
@@ -85,6 +117,8 @@ RUN \
   mkdir ffmpeg && \
   tar --no-same-owner --strip-components=1 -xJf ffmpeg.tar.xz -C ffmpeg && \
   cd ffmpeg && \
+  export PKG_CONFIG_PATH="/opt/media/lib/pkgconfig:${PKG_CONFIG_PATH:-}" && \
+  export LD_LIBRARY_PATH="/opt/media/lib:${LD_LIBRARY_PATH:-}" && \
   ./configure \
     --prefix=/opt/media \
     --bindir=/opt/media/bin \
@@ -183,6 +217,7 @@ ARG SUBTITLE_EDIT_VERSION=5.1.0
 ARG SUBTITLE_EDIT_SHA256=455938238969d3aa0a2a500ac061b66161bed1602a96846e01c883322cd5255f
 ARG SUBTITLE_EDIT_ICON_SHA256=dac76c5c0efaf1710a97b9f0b07d67e46ff816962b391014988e4310cfd36d44
 ARG FFMPEG_VERSION=9.0.1
+ARG LIBPLACEBO_VERSION=7.360.1
 ARG MPV_VERSION=0.41.0
 ARG TESSERACT_VERSION=5.5.3
 ARG DEBIAN_FRONTEND=noninteractive
@@ -198,6 +233,7 @@ LABEL org.opencontainers.image.title="Subtitle Edit for Unraid" \
       io.pegasbur.selkies.version="${SELKIES_VERSION}" \
       io.pegasbur.subtitle-edit.version="${SUBTITLE_EDIT_VERSION}" \
       io.pegasbur.ffmpeg.version="${FFMPEG_VERSION}" \
+      io.pegasbur.libplacebo.version="${LIBPLACEBO_VERSION}" \
       io.pegasbur.mpv.version="${MPV_VERSION}" \
       io.pegasbur.tesseract.version="${TESSERACT_VERSION}"
 

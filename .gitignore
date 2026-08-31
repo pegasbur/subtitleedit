@@ -2,3 +2,6 @@
 *.log
 *.tar.gz
 build/
+build-errors.txt
+*.log.gz
+*.pid

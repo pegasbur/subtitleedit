@@ -16,12 +16,14 @@ container, but other Docker platforms are not currently supported targets.
 | Subtitle Edit stable | 5.1.0 |
 | Subtitle Edit beta | 5.2.0-beta30 |
 | FFmpeg/FFprobe | 9.0.1 |
+| libplacebo | 7.360.1 |
 | MPV/libmpv | 0.41.0 |
 | Tesseract OCR | 5.5.3 |
 
 The authoritative pins and SHA-256 values are in `versions.env`.
 
-FFmpeg and MPV are built together so libmpv uses the same FFmpeg ABI. The
+libplacebo, FFmpeg, and MPV are built together so the renderer meets FFmpeg's
+minimum version and libmpv uses the same FFmpeg ABI. The
 build enables the mainstream video, audio, subtitle, optical-media, Intel
 QSV/VA-API, Vulkan, OpenCL, and Nvidia NVENC interfaces available from the
 Debian Trixie/Selkies dependency set. Tesseract includes English and
@@ -190,11 +192,12 @@ scripts/update-subtitle-edit.sh stable
 scripts/update-subtitle-edit.sh beta
 ```
 
-Selkies, FFmpeg, MPV, and Tesseract upgrades require editing `versions.env`,
-incrementing `IMAGE_REVISION` when appropriate, rebuilding, and completing the
-playback/OCR test checklist. The Selkies tag and immutable manifest digest are
-both recorded. These components are intentionally not upgraded unattended
-because the complete desktop and multimedia stack must be tested together.
+Selkies, libplacebo, FFmpeg, MPV, and Tesseract upgrades require editing
+`versions.env`, incrementing `IMAGE_REVISION` when appropriate, rebuilding,
+and completing the playback/OCR test checklist. The Selkies tag and immutable
+manifest digest are both recorded. These components are intentionally not
+upgraded unattended because the complete desktop and multimedia stack must be
+tested together.
 
 ## Release validation
 

@@ -31,6 +31,7 @@ for digest in \
   "${subtitle_edit_sha256}" \
   "${SUBTITLE_EDIT_ICON_SHA256}" \
   "${FFMPEG_SHA256}" \
+  "${LIBPLACEBO_SHA256}" \
   "${MPV_SHA256}" \
   "${TESSERACT_SHA256}"
 do
@@ -61,6 +62,8 @@ docker build \
   --build-arg "SUBTITLE_EDIT_ICON_SHA256=${SUBTITLE_EDIT_ICON_SHA256}" \
   --build-arg "FFMPEG_VERSION=${FFMPEG_VERSION}" \
   --build-arg "FFMPEG_SHA256=${FFMPEG_SHA256}" \
+  --build-arg "LIBPLACEBO_VERSION=${LIBPLACEBO_VERSION}" \
+  --build-arg "LIBPLACEBO_SHA256=${LIBPLACEBO_SHA256}" \
   --build-arg "MPV_VERSION=${MPV_VERSION}" \
   --build-arg "MPV_SHA256=${MPV_SHA256}" \
   --build-arg "TESSERACT_VERSION=${TESSERACT_VERSION}" \
