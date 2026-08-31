@@ -5,7 +5,7 @@ services:
     environment:
       PUID: "99"
       PGID: "100"
-      TZ: "Europe/Zurich"
+      TZ: "Etc/UTC"
       TITLE: "Subtitle Edit Test"
       CUSTOM_USER: "subtitle-edit"
       PASSWORD: "${SUBTITLE_EDIT_PASSWORD:?Set SUBTITLE_EDIT_PASSWORD in .env}"

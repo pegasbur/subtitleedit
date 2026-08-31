@@ -1,7 +1,7 @@
 <p align="center">
-  <a href="https://github.com/SubtitleEdit/subtitleedit"><img src="https://avatars.githubusercontent.com/u/3008853?s=60&amp;v=4" alt="Subtitle Edit" height="80"></a>
+  <a href="https://github.com/SubtitleEdit/subtitleedit"><img src="https://avatars.githubusercontent.com/u/3008853?s=80&amp;v=4" alt="Subtitle Edit" width="80" height="80"></a>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://unraid.net/"><img src="https://drive.google.com/thumbnail?id=1Q_6rprU_k6c6JeETcrkwqAq3weu7_zu-&amp;sz=w240" alt="Unraid" height="80"></a>
+  <a href="https://unraid.net/"><img src="https://drive.google.com/thumbnail?id=1Q_6rprU_k6c6JeETcrkwqAq3weu7_zu-&amp;sz=w160" alt="Unraid" width="80" height="80"></a>
 </p>
 
 <h1 align="center">Subtitle Edit for Unraid &amp; Docker</h1>
@@ -106,23 +106,14 @@ https://DOCKER-HOST-IP:3001
 ```
 
 The direct WebUI uses a self-signed certificate, so the browser will initially
-display a certificate warning. For Intel or AMD acceleration, add
-`--device=/dev/dri`. NVIDIA setup is shown in [CPU and GPU setup](#cpu-and-gpu-setup).
+display a certificate warning. GPU acceleration for Intel, AMD, and NVIDIA
+hardware requires additional configuration; see
+[CPU and GPU setup](#cpu-and-gpu-setup).
 
 ### macOS Docker Desktop
 
-Intel macOS Docker Desktop has been tested successfully. Docker Desktop cannot
-pass the Mac GPU to this Linux container, so use CPU rendering and X11:
-
-```text
--e PIXELFLUX_WAYLAND=false -e AUTO_GPU=false
-```
-
-Use paths under `$HOME` for local files. A GOZTEPE or other SMB share must first
-be mounted by macOS and then bind-mounted into the container, for example
-`--mount type=bind,source=/Volumes/data,target=/data`. CPU encoding can be slow
-on an older Mac, especially at Retina resolution; lowering the stream to
-1920×1080 and 30 FPS improves responsiveness.
+Intel macOS Docker Desktop has been tested successfully with CPU rendering and
+X11 by adding `-e PIXELFLUX_WAYLAND=false -e AUTO_GPU=false`.
 
 ## Stable or beta
 

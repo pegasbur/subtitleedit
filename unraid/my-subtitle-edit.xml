@@ -32,7 +32,7 @@
   <Config Name="Media" Target="/data" Default="/mnt/user/data" Mode="rw" Description="Media and subtitle files. Select files under /data inside Subtitle Edit." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/data</Config>
   <Config Name="PUID" Target="PUID" Default="99" Mode="" Description="Unraid nobody user ID." Type="Variable" Display="advanced" Required="true" Mask="false">99</Config>
   <Config Name="PGID" Target="PGID" Default="100" Mode="" Description="Unraid users group ID." Type="Variable" Display="advanced" Required="true" Mask="false">100</Config>
-  <Config Name="Timezone" Target="TZ" Default="Europe/Zurich" Mode="" Description="Container timezone." Type="Variable" Display="advanced" Required="true" Mask="false">Europe/Zurich</Config>
+  <Config Name="Timezone" Target="TZ" Default="Etc/UTC" Mode="" Description="Container timezone." Type="Variable" Display="advanced" Required="true" Mask="false">Etc/UTC</Config>
   <Config Name="Web username" Target="CUSTOM_USER" Default="subtitle-edit" Mode="" Description="Selkies HTTP Basic Authentication username." Type="Variable" Display="always" Required="true" Mask="false">subtitle-edit</Config>
   <Config Name="Web password" Target="PASSWORD" Default="" Mode="" Description="Selkies HTTP Basic Authentication password. Do not leave blank." Type="Variable" Display="always-hide" Required="true" Mask="true"></Config>
   <Config Name="Intel/AMD GPU device (optional)" Target="/dev/dri" Default="" Mode="rw" Description="Enter /dev/dri for Intel/AMD acceleration. Leave blank for CPU mode or NVIDIA; NVIDIA uses the Extra Parameters field instead." Type="Device" Display="advanced" Required="false" Mask="false"></Config>
