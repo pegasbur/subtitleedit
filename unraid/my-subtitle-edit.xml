@@ -3,14 +3,14 @@
   <Beta>False</Beta>
   <Name>Subtitle Edit</Name>
   <Repository>ghcr.io/pegasbur/subtitle-edit:latest</Repository>
-  <Registry>https://github.com/pegasbur/subtitle-edit/pkgs/container/subtitle-edit</Registry>
+  <Registry>https://github.com/users/pegasbur/packages/container/package/subtitle-edit</Registry>
   <Network>bridge</Network>
   <MyIP/>
   <Shell>bash</Shell>
   <Privileged>false</Privileged>
   <Support>https://github.com/pegasbur/subtitle-edit/issues</Support>
   <Project>https://github.com/pegasbur/subtitle-edit</Project>
-  <Overview>Unofficial Unraid packaging of native Linux Subtitle Edit in a Selkies browser desktop. Includes Ubuntu's matched FFmpeg/MPV multimedia stack, Tesseract OCR, persistent settings and optional GPU access. No Wine or VM is used.</Overview>
+  <Overview>Run native Linux Subtitle Edit in a web browser. Includes FFmpeg, MPV, Tesseract OCR, persistent settings and optional GPU acceleration. No Wine or virtual machine is used.</Overview>
   <Category>MediaApp:Video Tools:</Category>
   <WebUI>https://[IP]:[PORT:3001]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/pegasbur/subtitle-edit/main/unraid/my-subtitle-edit.xml</TemplateURL>
@@ -18,7 +18,7 @@
   <ExtraParams>--shm-size=1g</ExtraParams>
   <PostArgs/>
   <CPUset/>
-  <Requires>AMD64 Unraid. A GPU is optional; add /dev/dri in the advanced GPU field for Intel/AMD acceleration. Direct HTTPS uses a self-signed certificate.</Requires>
+  <Requires>AMD64 Unraid. CPU mode needs no GPU setting. Intel/AMD: set the optional GPU device to /dev/dri. NVIDIA: install the Unraid Nvidia Driver and set Extra Parameters to --runtime=nvidia --gpus all --shm-size=1g. Direct HTTPS uses a self-signed certificate.</Requires>
   <Branch>
     <Tag>latest</Tag>
     <TagDescription>Latest tested stable Subtitle Edit release. Recommended for normal use.</TagDescription>
@@ -35,7 +35,7 @@
   <Config Name="Timezone" Target="TZ" Default="Europe/Zurich" Mode="" Description="Container timezone." Type="Variable" Display="advanced" Required="true" Mask="false">Europe/Zurich</Config>
   <Config Name="Web username" Target="CUSTOM_USER" Default="subtitle-edit" Mode="" Description="Selkies HTTP Basic Authentication username." Type="Variable" Display="always" Required="true" Mask="false">subtitle-edit</Config>
   <Config Name="Web password" Target="PASSWORD" Default="" Mode="" Description="Selkies HTTP Basic Authentication password. Do not leave blank." Type="Variable" Display="always-hide" Required="true" Mask="true"></Config>
-  <Config Name="GPU device (optional)" Target="/dev/dri" Default="" Mode="rw" Description="For Intel/AMD hardware acceleration, enter /dev/dri. Leave blank for CPU/software operation." Type="Device" Display="advanced" Required="false" Mask="false"></Config>
-  <Config Name="Automatic GPU" Target="AUTO_GPU" Default="true" Mode="" Description="Automatically use the first mapped /dev/dri render device for the browser stream." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
+  <Config Name="Intel/AMD GPU device (optional)" Target="/dev/dri" Default="" Mode="rw" Description="Enter /dev/dri for Intel/AMD acceleration. Leave blank for CPU mode or NVIDIA; NVIDIA uses the Extra Parameters field instead." Type="Device" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Automatic GPU" Target="AUTO_GPU" Default="true" Mode="" Description="Automatically use the first GPU made available to the container for rendering and browser-stream encoding." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
   <Config Name="Disable nested Docker" Target="START_DOCKER" Default="false" Mode="" Description="Keep Docker-in-Docker disabled." Type="Variable" Display="advanced" Required="true" Mask="false">false</Config>
 </Container>

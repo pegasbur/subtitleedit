@@ -1,254 +1,148 @@
 # Subtitle Edit for Unraid
 
-Unofficial Unraid packaging of the native Linux build of
-[Subtitle Edit](https://github.com/SubtitleEdit/subtitleedit) in a
-[LinuxServer Selkies](https://github.com/linuxserver/docker-baseimage-selkies)
-browser desktop. It does not use Wine or a virtual machine.
+Run the native Linux version of
+[Subtitle Edit](https://github.com/SubtitleEdit/subtitleedit) from a web browser.
+The container includes a complete browser desktop, FFmpeg, MPV, and Tesseract
+OCR. It does not use Wine or a virtual machine.
 
-The image is designed and tested for AMD64 Unraid. It remains a normal OCI
-container, but other Docker platforms are not currently supported targets.
+> This is an unofficial AMD64 Unraid package. It is not maintained or endorsed
+> by the Subtitle Edit or LinuxServer teams.
 
-## Included stack
+## Quick start on Unraid
 
-| Component | Pinned version |
-|---|---:|
-| LinuxServer Selkies | Ubuntu Resolute (see `versions.env`) |
-| Subtitle Edit stable | 5.1.0 |
-| Subtitle Edit beta | 5.2.0-beta30 |
-| FFmpeg/FFprobe | Ubuntu Resolute package (currently 8.0.1) |
-| libplacebo | Ubuntu Resolute package (currently 7.360.0) |
-| MPV/libmpv | Ubuntu Resolute package (currently 0.41.0) |
-| Tesseract OCR | Ubuntu Resolute package (currently 5.5.0) |
+The template is being prepared for Community Applications. Until it is listed,
+install the user template from an Unraid terminal:
 
-The authoritative Subtitle Edit release hashes and immutable Selkies image pin
-are in `versions.env`.
+```bash
+curl -fsSL \
+  https://raw.githubusercontent.com/pegasbur/subtitle-edit/main/unraid/my-subtitle-edit.xml \
+  -o /boot/config/plugins/dockerMan/templates-user/my-subtitle-edit.xml
+```
 
-FFmpeg, libplacebo, MPV/libmpv, and Tesseract are installed from Ubuntu
-Resolute's repositories. Ubuntu builds and updates these libraries as a
-compatible distribution set, avoiding a separately maintained multimedia ABI
-inside this image. Tesseract includes English and orientation/script data by
-default.
+Then open **Docker > Add Container** and select **Subtitle Edit** from the
+template list.
 
-Large optional engines such as PaddleOCR, CrispEmbed, Whisper, and llama.cpp
-remain on-demand downloads. Subtitle Edit stores them under `/config`, so they
-survive container replacement.
+During installation:
 
-## Unraid installation
+1. Choose `latest` for normal use or `beta` for testing.
+2. Enter a strong **Web password**.
+3. Confirm the appdata and media paths.
+4. Choose the GPU setup described below, or leave GPU access disabled.
+5. Apply the template.
 
-The Community Applications template is included in
-`unraid/my-subtitle-edit.xml`, but the application is not listed in Community
-Applications until its first public image and submission have been validated.
-
-The template offers two image branches during installation:
-
-- `latest`: tested stable Subtitle Edit release; recommended.
-- `beta`: tested Subtitle Edit beta with the same media/OCR stack.
-
-Use a separate appdata directory when testing beta releases. A beta may migrate
-settings in ways that are not safe to downgrade.
-
-Default mappings:
-
-| Host | Container | Purpose |
-|---|---|---|
-| `/mnt/user/appdata/subtitle-edit` | `/config` | Settings, desktop state, OCR data, and downloaded models |
-| `/mnt/user/data` | `/data` | Media and subtitle files |
-| Host `3001` | Container `3001` | Direct HTTPS WebUI |
-
-Open:
+Open the WebUI from the Unraid Docker page, or browse to:
 
 ```text
 https://UNRAID-IP:3001
 ```
 
-Selkies uses a self-signed certificate on port 3001, so the browser will show a
-certificate warning. The host port may be changed without changing container
-port 3001.
+The direct WebUI uses a self-signed certificate, so the browser will display a
+certificate warning. The host port can be changed if `3001` is already used by
+another container.
 
-Port 3000 is Selkies' plain HTTP entrance for reverse proxies. It does not need
-to be published for a normal direct installation. If a reverse proxy shares a
-Docker network with the container, proxy to `subtitle-edit:3000` over HTTP.
-Host ports used by unrelated containers, such as Grafana's host port 3000, do
-not conflict with an unpublished container port.
+## Stable or beta
 
-## Authentication and exposure
+| Image tag | Intended use |
+|---|---|
+| `latest` | Latest tested stable Subtitle Edit release; recommended |
+| `beta` | Latest tested beta; useful for new Linux fixes and features |
 
-`CUSTOM_USER` and `PASSWORD` enable Selkies HTTP Basic Authentication. Set a
-strong password during installation.
+Use a separate appdata directory when evaluating the beta, for example
+`/mnt/user/appdata/subtitle-edit-beta`. A beta may change settings in ways that
+are not safe to downgrade.
 
-This browser desktop is intended for a trusted LAN or private Tailscale
-connection. Do not expose it directly to the public Internet. Basic
-authentication alone is not an appropriate public-access security boundary.
+## CPU and GPU setup
 
-## GPU support
+A GPU is optional. Subtitle Edit works with CPU/software rendering, although
+the browser stream and video playback may use more CPU.
 
-A GPU is optional. CPU/software rendering works without `/dev/dri`.
+| Hardware | Unraid configuration |
+|---|---|
+| CPU only | Leave **GPU device** blank; keep Extra Parameters as `--shm-size=1g` |
+| Intel or AMD | Set **Intel/AMD GPU device** to `/dev/dri`; keep Extra Parameters as `--shm-size=1g` |
+| NVIDIA | Leave the Intel/AMD device blank; in Advanced View set Extra Parameters to `--runtime=nvidia --gpus all --shm-size=1g` |
 
-For Intel or AMD acceleration, set the optional Unraid device field to:
+NVIDIA requires the production branch of the Unraid Nvidia Driver plugin and a
+working Nvidia container runtime. Follow the current
+[LinuxServer Selkies GPU instructions](https://docs.linuxserver.io/images/docker-baseimage-selkies/#gpu-acceleration)
+for driver, DRM modesetting, and headless-GPU requirements.
 
-```text
-/dev/dri
-```
+GPU access accelerates the browser desktop, video rendering, and stream
+encoding. It does **not** automatically make Tesseract or a CPU edition of an
+optional OCR engine use the GPU.
 
-This lets Selkies use the render device and makes FFmpeg/MPV VA-API available.
-Hardware interfaces depend on Ubuntu's FFmpeg package configuration and the
-mapped host device. Nvidia use additionally requires the Unraid Nvidia
-driver/runtime configuration.
+## Files and persistence
 
-## Tesseract and optional OCR models
+The default mappings are:
 
-On first GUI start, the bundled Tesseract data is copied into:
+| Unraid path | Container path | Purpose |
+|---|---|---|
+| `/mnt/user/appdata/subtitle-edit` | `/config` | Settings, desktop state, OCR data, and downloaded models |
+| `/mnt/user/data` | `/data` | Media and subtitle files |
+
+Open media from `/data` inside Subtitle Edit. Anything stored only elsewhere
+inside the container is temporary and may disappear when the image is updated.
+
+The application and bundled tools are part of the image. Replacing or updating
+the container does not erase `/config` or `/data`.
+
+## OCR engines
+
+Tesseract, English language data, and orientation/script detection are included.
+Additional Tesseract `.traineddata` files can be placed in:
 
 ```text
 /config/tessdata
 ```
 
-English and OSD are immediately available. Additional compatible
-`.traineddata` files may be added to that directory and persist across image
-updates.
+Large optional engines such as PaddleOCR, CrispEmbed, Whisper, and llama.cpp
+can be downloaded from Subtitle Edit when requested. Their files are stored
+under `/config` and survive container updates.
 
-PaddleOCR, CrispEmbed, Whisper, llama.cpp, and similar engines should be
-installed through Subtitle Edit's own download prompts. Their much larger
-models also persist under `/config`.
+Tesseract normally uses the CPU. Optional OCR engines use the GPU only when the
+specific engine and downloaded package support it.
 
-## Local maintainer build
+## Updating
 
-The repository belongs in a development share, not appdata:
+When a new tested image is published, use Unraid's normal **Check for Updates**
+and **Update** controls. Your settings, downloaded OCR models, and media remain
+in their mapped folders.
 
-```text
-/mnt/user/development/subtitle-edit
-```
+Changing from `latest` to `beta` selects the tested beta image. Changing back to
+`latest` is not recommended with the same appdata directory after a beta has
+migrated its settings.
 
-Build the stable image:
+## Network access and security
 
-```bash
-./build.sh stable
-```
+Set a strong web password. This desktop is intended for a trusted LAN or a
+private connection such as Tailscale. Do not expose it directly to the public
+Internet.
 
-Build the beta image:
+Port `3001` provides direct HTTPS access. Port `3000` is the internal HTTP port
+for a reverse proxy and normally does not need a host-port mapping. A reverse
+proxy sharing a Docker network with this container can proxy to
+`subtitle-edit:3000`.
 
-```bash
-./build.sh beta
-```
+## Known Linux limitation
 
-The first build downloads the Ubuntu Selkies base, Ubuntu runtime packages, and
-the selected Subtitle Edit archive. Later builds normally reuse Docker
-BuildKit's cached layers when these inputs have not changed.
+In current testing, the **Export** button in the Blu-ray/M2TS transport-stream
+track picker does not reliably save a raw `.sup` file on Linux. Stable 5.1.0 may
+close the application; beta 5.2.0-beta30 remains open but may not display a save
+dialog. This occurs under both Wayland and X11.
 
-Local tags follow this pattern:
+To convert a graphical subtitle track to SRT, select the track, click **OK**, run
+OCR, and then use **File > Save As**. That workflow works and does not require
+the raw Export button.
 
-```text
-pegasbur/subtitle-edit:latest
-pegasbur/subtitle-edit:5.1.0-r1
-pegasbur/subtitle-edit:beta
-pegasbur/subtitle-edit:5.2.0-beta30-r1
-```
+## Support and development
 
-## Isolated test container
+Report container, image, or Unraid-template problems in this repository's
+[issue tracker](https://github.com/pegasbur/subtitle-edit/issues). Application
+bugs should be reported to Subtitle Edit after confirming they are not specific
+to this container.
 
-Create the local environment file:
+Build instructions, version-pin maintenance, validation, and publishing are in
+[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
-```bash
-cp .env.example .env
-nano .env
-```
-
-Start without GPU access:
-
-```bash
-docker compose up -d
-```
-
-Start with `/dev/dri`:
-
-```bash
-docker compose \
-  -f compose.yaml \
-  -f compose.gpu.yaml \
-  up -d
-```
-
-The test container uses separate appdata and host port 3101:
-
-```text
-/mnt/user/appdata/subtitle-edit-test
-https://UNRAID-IP:3101
-```
-
-It therefore does not replace the existing production container.
-
-## Updating versions
-
-Check all top-level pins against upstream:
-
-```bash
-scripts/check-versions.sh
-```
-
-Update the stable or beta Subtitle Edit pin and asset digest automatically:
-
-```bash
-scripts/update-subtitle-edit.sh stable
-scripts/update-subtitle-edit.sh beta
-```
-
-Update the Selkies version and immutable manifest digest automatically:
-
-```bash
-scripts/update-selkies.sh
-```
-
-Review the resulting `versions.env` change, increment `IMAGE_REVISION` for a
-published rebuild, and complete the playback/OCR test checklist. FFmpeg,
-libplacebo, MPV, and Tesseract follow the Ubuntu Resolute repositories visible
-during the image build. Rebuilding against an updated Selkies base obtains the
-current matched Ubuntu package set; those versions are confirmed from the
-finished image before release.
-
-## Release validation
-
-Before publishing a channel, verify at minimum:
-
-- Subtitle Edit starts, restarts, and retains settings.
-- H.264, HEVC, AV1, MPEG-2, AAC, AC-3/E-AC-3, DTS, and TrueHD media open.
-- Playback, seeking, audio, frame stepping, and waveform generation work.
-- FFprobe media inspection and FFmpeg extraction/conversion work.
-- PGS/SUP and VobSub OCR work with Tesseract and an on-demand OCR engine.
-- Subtitle export and Save dialogs work under Selkies/Wayland.
-- Intel VA-API streaming works with `/dev/dri`.
-- CPU/software fallback works without `/dev/dri`.
-- Both direct HTTPS 3001 and reverse-proxied HTTP 3000 work as documented.
-
-Useful checks:
-
-```bash
-docker exec subtitle-edit-test ffmpeg -version
-docker exec subtitle-edit-test ffmpeg -hide_banner -hwaccels
-docker exec subtitle-edit-test mpv --version
-docker exec subtitle-edit-test tesseract --version
-docker exec subtitle-edit-test ldconfig -p | grep libmpv
-docker logs -f subtitle-edit-test
-```
-
-## Publishing
-
-The manual `Publish image` GitHub Actions workflow builds AMD64 and publishes
-to:
-
-```text
-ghcr.io/pegasbur/subtitle-edit
-```
-
-Choose `stable` or `beta` when running the workflow. Stable publishes `latest`
-plus versioned tags; beta publishes `beta` plus versioned tags. After the first
-publish, the GHCR package must be made public in GitHub package settings.
-
-## Project status and licensing
-
-This is an unofficial packaging project and is not maintained or endorsed by
-the Subtitle Edit or LinuxServer teams. Report container and Unraid issues in
-this repository; report application bugs upstream only after confirming they
-also occur outside this packaging.
-
-Original integration files are MIT licensed. Included software retains its own
-license. See `THIRD_PARTY_NOTICES.md` for details.
+The integration files are MIT licensed. Included software retains its own
+license; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
