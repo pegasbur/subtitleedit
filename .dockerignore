@@ -1,8 +1,11 @@
 .git
+.github
 .env
+*.log
 *.tar.gz
+build/
 unraid/
 README.md
-compose.yaml
-build.sh
-
+THIRD_PARTY_NOTICES.md
+compose*.yaml
+scripts/

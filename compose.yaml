@@ -1,28 +1,20 @@
 services:
-  subtitle-edit:
-    image: goztepe/subtitle-edit:5.1.0
-    container_name: subtitle-edit
+  subtitle-edit-test:
+    image: "${SUBTITLE_EDIT_IMAGE:-pegasbur/subtitle-edit:latest}"
+    container_name: subtitle-edit-test
     environment:
       PUID: "99"
       PGID: "100"
-      TZ: "Europe/Istanbul"
-      TITLE: "Subtitle Edit"
+      TZ: "Europe/Zurich"
+      TITLE: "Subtitle Edit Test"
       CUSTOM_USER: "subtitle-edit"
       PASSWORD: "${SUBTITLE_EDIT_PASSWORD:?Set SUBTITLE_EDIT_PASSWORD in .env}"
       AUTO_GPU: "true"
       START_DOCKER: "false"
     volumes:
-      - /mnt/user/appdata/subtitle-edit/config:/config
+      - /mnt/user/appdata/subtitle-edit-test:/config
       - /mnt/user/data:/data
-    devices:
-      - /dev/dri:/dev/dri
     ports:
-      - "3001:3001"
+      - "${SUBTITLE_EDIT_HTTPS_PORT:-3101}:3001"
     shm_size: "1gb"
     restart: unless-stopped
-    networks:
-      - encoding
-
-networks:
-  encoding:
-    external: true

@@ -1,0 +1,4 @@
+services:
+  subtitle-edit-test:
+    devices:
+      - /dev/dri:/dev/dri

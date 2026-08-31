@@ -1,31 +1,41 @@
 <?xml version="1.0"?>
 <Container version="2">
-  <Name>subtitle-edit</Name>
-  <Repository>goztepe/subtitle-edit:5.1.0</Repository>
-  <Registry/>
-  <Network>encoding</Network>
+  <Beta>False</Beta>
+  <Name>Subtitle Edit</Name>
+  <Repository>ghcr.io/pegasbur/subtitle-edit:latest</Repository>
+  <Registry>https://github.com/pegasbur/subtitle-edit/pkgs/container/subtitle-edit</Registry>
+  <Network>bridge</Network>
   <MyIP/>
   <Shell>bash</Shell>
   <Privileged>false</Privileged>
-  <Support>https://github.com/SubtitleEdit/subtitleedit/issues</Support>
-  <Project>https://github.com/SubtitleEdit/subtitleedit</Project>
-  <Overview>Native Linux Subtitle Edit in a browser desktop. Includes FFmpeg and MPV. Settings persist in /config and media is available under /data.</Overview>
+  <Support>https://github.com/pegasbur/subtitle-edit/issues</Support>
+  <Project>https://github.com/pegasbur/subtitle-edit</Project>
+  <Overview>Unofficial Unraid packaging of native Linux Subtitle Edit in a Selkies browser desktop. Includes a pinned FFmpeg/MPV multimedia stack, Tesseract OCR, persistent settings and optional GPU access. No Wine or VM is used.</Overview>
   <Category>MediaApp:Video Tools:</Category>
   <WebUI>https://[IP]:[PORT:3001]/</WebUI>
-  <TemplateURL/>
+  <TemplateURL>https://raw.githubusercontent.com/pegasbur/subtitle-edit/main/unraid/my-subtitle-edit.xml</TemplateURL>
   <Icon>https://raw.githubusercontent.com/SubtitleEdit/subtitleedit/main/src/libse/Icon.png</Icon>
-  <ExtraParams>--device=/dev/dri --shm-size=1g</ExtraParams>
+  <ExtraParams>--shm-size=1g</ExtraParams>
   <PostArgs/>
   <CPUset/>
-  <Requires>Build the local image first. Create the encoding Docker network if it does not exist. Remove the /dev/dri Extra Parameter if the device is unavailable.</Requires>
-  <Config Name="Web UI HTTPS" Target="3001" Default="3001" Mode="tcp" Description="Temporary direct HTTPS access. Remove this mapping after putting the app behind your private proxy/Tailscale route." Type="Port" Display="always" Required="true" Mask="false">3001</Config>
-  <Config Name="Appdata" Target="/config" Default="/mnt/user/appdata/subtitle-edit/config" Mode="rw" Description="Persistent Subtitle Edit and desktop settings." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/subtitle-edit/config</Config>
-  <Config Name="Media" Target="/data" Default="/mnt/user/data" Mode="rw" Description="Your media and subtitle files. Use /data paths inside Subtitle Edit." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/data</Config>
+  <Requires>AMD64 Unraid. A GPU is optional; add /dev/dri in the advanced GPU field for Intel/AMD acceleration. Direct HTTPS uses a self-signed certificate.</Requires>
+  <Branch>
+    <Tag>latest</Tag>
+    <TagDescription>Latest tested stable Subtitle Edit release. Recommended for normal use.</TagDescription>
+  </Branch>
+  <Branch>
+    <Tag>beta</Tag>
+    <TagDescription>Latest tested Subtitle Edit beta. Use a separate appdata directory when evaluating it.</TagDescription>
+  </Branch>
+  <Config Name="Web UI HTTPS" Target="3001" Default="3001" Mode="tcp" Description="Direct HTTPS access using Selkies' self-signed certificate. Change the host port if 3001 is already in use." Type="Port" Display="always" Required="true" Mask="false">3001</Config>
+  <Config Name="Appdata" Target="/config" Default="/mnt/user/appdata/subtitle-edit" Mode="rw" Description="Persistent Subtitle Edit settings, desktop configuration, OCR databases, and downloaded models." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/subtitle-edit</Config>
+  <Config Name="Media" Target="/data" Default="/mnt/user/data" Mode="rw" Description="Media and subtitle files. Select files under /data inside Subtitle Edit." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/data</Config>
   <Config Name="PUID" Target="PUID" Default="99" Mode="" Description="Unraid nobody user ID." Type="Variable" Display="advanced" Required="true" Mask="false">99</Config>
   <Config Name="PGID" Target="PGID" Default="100" Mode="" Description="Unraid users group ID." Type="Variable" Display="advanced" Required="true" Mask="false">100</Config>
-  <Config Name="Timezone" Target="TZ" Default="Europe/Istanbul" Mode="" Description="Container timezone." Type="Variable" Display="advanced" Required="true" Mask="false">Europe/Istanbul</Config>
-  <Config Name="Web username" Target="CUSTOM_USER" Default="subtitle-edit" Mode="" Description="HTTP Basic authentication username." Type="Variable" Display="always" Required="true" Mask="false">subtitle-edit</Config>
-  <Config Name="Web password" Target="PASSWORD" Default="" Mode="" Description="HTTP Basic authentication password. Do not leave blank." Type="Variable" Display="always-hide" Required="true" Mask="true"></Config>
-  <Config Name="Automatic GPU" Target="AUTO_GPU" Default="true" Mode="" Description="Use the first mapped /dev/dri device for the browser stream." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
+  <Config Name="Timezone" Target="TZ" Default="Europe/Zurich" Mode="" Description="Container timezone." Type="Variable" Display="advanced" Required="true" Mask="false">Europe/Zurich</Config>
+  <Config Name="Web username" Target="CUSTOM_USER" Default="subtitle-edit" Mode="" Description="Selkies HTTP Basic Authentication username." Type="Variable" Display="always" Required="true" Mask="false">subtitle-edit</Config>
+  <Config Name="Web password" Target="PASSWORD" Default="" Mode="" Description="Selkies HTTP Basic Authentication password. Do not leave blank." Type="Variable" Display="always-hide" Required="true" Mask="true"></Config>
+  <Config Name="GPU device (optional)" Target="/dev/dri" Default="" Mode="rw" Description="For Intel/AMD hardware acceleration, enter /dev/dri. Leave blank for CPU/software operation." Type="Device" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Automatic GPU" Target="AUTO_GPU" Default="true" Mode="" Description="Automatically use the first mapped /dev/dri render device for the browser stream." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
   <Config Name="Disable nested Docker" Target="START_DOCKER" Default="false" Mode="" Description="Keep Docker-in-Docker disabled." Type="Variable" Display="advanced" Required="true" Mask="false">false</Config>
 </Container>

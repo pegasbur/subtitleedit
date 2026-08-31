@@ -1,5 +1,7 @@
 #!/bin/bash
 
+/usr/local/bin/prepare-subtitle-edit
+
 if [ ! -f "${HOME}/Desktop/subtitleedit.desktop" ]; then
   cp /usr/share/applications/subtitleedit.desktop "${HOME}/Desktop/"
 fi
@@ -9,4 +11,3 @@ gio mime inode/directory caja-browser.desktop
 gio mime application/x-terminal-emulator foot.desktop
 
 exec /usr/local/bin/subtitleedit
-

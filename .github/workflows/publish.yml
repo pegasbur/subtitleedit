@@ -1,0 +1,108 @@
+name: Publish image
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: Subtitle Edit release channel
+        required: true
+        default: stable
+        type: choice
+        options:
+          - stable
+          - beta
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Resolve pinned versions and image tags
+        id: versions
+        env:
+          CHANNEL: ${{ inputs.channel }}
+        run: |
+          set -euo pipefail
+          # shellcheck disable=SC1091
+          source versions.env
+
+          if [[ "${CHANNEL}" == "stable" ]]; then
+            subtitle_edit_version="${SUBTITLE_EDIT_STABLE_VERSION}"
+            subtitle_edit_sha256="${SUBTITLE_EDIT_STABLE_SHA256}"
+            channel_tag="latest"
+          else
+            subtitle_edit_version="${SUBTITLE_EDIT_BETA_VERSION}"
+            subtitle_edit_sha256="${SUBTITLE_EDIT_BETA_SHA256}"
+            channel_tag="beta"
+          fi
+
+          version_tag="${subtitle_edit_version}-r${IMAGE_REVISION}"
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/subtitle-edit"
+
+          {
+            echo "subtitle_edit_version=${subtitle_edit_version}"
+            echo "subtitle_edit_sha256=${subtitle_edit_sha256}"
+            echo "version_tag=${version_tag}"
+            echo "image=${image}"
+            echo "tags<<EOF"
+            echo "${image}:${channel_tag}"
+            echo "${image}:${subtitle_edit_version}"
+            echo "${image}:${version_tag}"
+            echo "EOF"
+            echo "build_args<<EOF"
+            echo "BASE_IMAGE=${SELKIES_IMAGE}"
+            echo "BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "VCS_REF=${GITHUB_SHA}"
+            echo "IMAGE_REVISION=${IMAGE_REVISION}"
+            echo "SELKIES_VERSION=${SELKIES_VERSION}"
+            echo "SUBTITLE_EDIT_VERSION=${subtitle_edit_version}"
+            echo "SUBTITLE_EDIT_SHA256=${subtitle_edit_sha256}"
+            echo "SUBTITLE_EDIT_ICON_SHA256=${SUBTITLE_EDIT_ICON_SHA256}"
+            echo "FFMPEG_VERSION=${FFMPEG_VERSION}"
+            echo "FFMPEG_SHA256=${FFMPEG_SHA256}"
+            echo "MPV_VERSION=${MPV_VERSION}"
+            echo "MPV_SHA256=${MPV_SHA256}"
+            echo "TESSERACT_VERSION=${TESSERACT_VERSION}"
+            echo "TESSERACT_SHA256=${TESSERACT_SHA256}"
+            echo "EOF"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish AMD64 image
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          pull: true
+          tags: ${{ steps.versions.outputs.tags }}
+          build-args: ${{ steps.versions.outputs.build_args }}
+          cache-from: type=gha,scope=${{ inputs.channel }}
+          cache-to: type=gha,mode=max,scope=${{ inputs.channel }}
+          provenance: mode=max
+          sbom: true
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ steps.versions.outputs.image }}
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
