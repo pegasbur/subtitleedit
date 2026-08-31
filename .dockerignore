@@ -1,0 +1,8 @@
+.git
+.env
+*.tar.gz
+unraid/
+README.md
+compose.yaml
+build.sh
+

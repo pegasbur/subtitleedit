@@ -1,0 +1,28 @@
+services:
+  subtitle-edit:
+    image: goztepe/subtitle-edit:5.1.0
+    container_name: subtitle-edit
+    environment:
+      PUID: "99"
+      PGID: "100"
+      TZ: "Europe/Istanbul"
+      TITLE: "Subtitle Edit"
+      CUSTOM_USER: "subtitle-edit"
+      PASSWORD: "${SUBTITLE_EDIT_PASSWORD:?Set SUBTITLE_EDIT_PASSWORD in .env}"
+      AUTO_GPU: "true"
+      START_DOCKER: "false"
+    volumes:
+      - /mnt/user/appdata/subtitle-edit/config:/config
+      - /mnt/user/data:/data
+    devices:
+      - /dev/dri:/dev/dri
+    ports:
+      - "3001:3001"
+    shm_size: "1gb"
+    restart: unless-stopped
+    networks:
+      - encoding
+
+networks:
+  encoding:
+    external: true

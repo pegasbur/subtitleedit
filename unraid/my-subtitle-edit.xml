@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>subtitle-edit</Name>
+  <Repository>goztepe/subtitle-edit:5.1.0</Repository>
+  <Registry/>
+  <Network>encoding</Network>
+  <MyIP/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/SubtitleEdit/subtitleedit/issues</Support>
+  <Project>https://github.com/SubtitleEdit/subtitleedit</Project>
+  <Overview>Native Linux Subtitle Edit in a browser desktop. Includes FFmpeg and MPV. Settings persist in /config and media is available under /data.</Overview>
+  <Category>MediaApp:Video Tools:</Category>
+  <WebUI>https://[IP]:[PORT:3001]/</WebUI>
+  <TemplateURL/>
+  <Icon>https://raw.githubusercontent.com/SubtitleEdit/subtitleedit/main/src/libse/Icon.png</Icon>
+  <ExtraParams>--device=/dev/dri --shm-size=1g</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <Requires>Build the local image first. Create the encoding Docker network if it does not exist. Remove the /dev/dri Extra Parameter if the device is unavailable.</Requires>
+  <Config Name="Web UI HTTPS" Target="3001" Default="3001" Mode="tcp" Description="Temporary direct HTTPS access. Remove this mapping after putting the app behind your private proxy/Tailscale route." Type="Port" Display="always" Required="true" Mask="false">3001</Config>
+  <Config Name="Appdata" Target="/config" Default="/mnt/user/appdata/subtitle-edit/config" Mode="rw" Description="Persistent Subtitle Edit and desktop settings." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/subtitle-edit/config</Config>
+  <Config Name="Media" Target="/data" Default="/mnt/user/data" Mode="rw" Description="Your media and subtitle files. Use /data paths inside Subtitle Edit." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/data</Config>
+  <Config Name="PUID" Target="PUID" Default="99" Mode="" Description="Unraid nobody user ID." Type="Variable" Display="advanced" Required="true" Mask="false">99</Config>
+  <Config Name="PGID" Target="PGID" Default="100" Mode="" Description="Unraid users group ID." Type="Variable" Display="advanced" Required="true" Mask="false">100</Config>
+  <Config Name="Timezone" Target="TZ" Default="Europe/Istanbul" Mode="" Description="Container timezone." Type="Variable" Display="advanced" Required="true" Mask="false">Europe/Istanbul</Config>
+  <Config Name="Web username" Target="CUSTOM_USER" Default="subtitle-edit" Mode="" Description="HTTP Basic authentication username." Type="Variable" Display="always" Required="true" Mask="false">subtitle-edit</Config>
+  <Config Name="Web password" Target="PASSWORD" Default="" Mode="" Description="HTTP Basic authentication password. Do not leave blank." Type="Variable" Display="always-hide" Required="true" Mask="true"></Config>
+  <Config Name="Automatic GPU" Target="AUTO_GPU" Default="true" Mode="" Description="Use the first mapped /dev/dri device for the browser stream." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
+  <Config Name="Disable nested Docker" Target="START_DOCKER" Default="false" Mode="" Description="Keep Docker-in-Docker disabled." Type="Variable" Display="advanced" Required="true" Mask="false">false</Config>
+</Container>
