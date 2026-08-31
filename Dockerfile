@@ -54,6 +54,8 @@ RUN \
     tesseract-ocr \
     tesseract-ocr-eng \
     tesseract-ocr-osd \
+    xdg-desktop-portal \
+    xdg-desktop-portal-gtk \
     xdg-utils && \
   echo "**** expose libmpv for Subtitle Edit ****" && \
   mpv_library="$(ldconfig -p | awk '/libmpv\.so\.[0-9]+/{print $NF; exit}')" && \
