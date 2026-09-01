@@ -31,7 +31,7 @@ jobs:
             root/usr/local/bin/prepare-subtitle-edit
 
       - name: Validate Unraid XML
-        run: xmllint --noout unraid/my-subtitle-edit.xml
+        run: xmllint --noout unraid/my-subtitleedit.xml
 
       - name: Validate Compose configuration
         env:
