@@ -11,6 +11,7 @@ if [[ "${mode}" != "check" && "${mode}" != "apply" ]]; then
 fi
 
 # shellcheck disable=SC1091
+# shellcheck source=../versions.env
 source "${versions_file}"
 
 release="$(

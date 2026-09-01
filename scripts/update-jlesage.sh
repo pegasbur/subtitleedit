@@ -5,6 +5,7 @@ repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 versions_file="${repo_dir}/versions.env"
 
 # shellcheck disable=SC1091
+# shellcheck source=../versions.env
 source "${versions_file}"
 
 image_tag="${JLESAGE_IMAGE%%@*}"
