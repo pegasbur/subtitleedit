@@ -1,4 +1,4 @@
 services:
-  subtitleedit-test:
+  subtitleedit:
     devices:
       - /dev/dri:/dev/dri

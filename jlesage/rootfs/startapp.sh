@@ -1,5 +1,6 @@
-#!/bin/bash
+#!/bin/sh
+set -eu
 
 /usr/local/bin/prepare-subtitleedit
-xdg-mime default caja.desktop inode/directory
+
 exec /usr/local/bin/subtitleedit

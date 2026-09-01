@@ -12,6 +12,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -25,17 +26,22 @@ jobs:
         run: |
           shellcheck \
             build.sh \
-            scripts/*.sh \
-            root/defaults/autostart \
-            root/defaults/autostart_wayland \
-            root/usr/local/bin/prepare-subtitleedit
+            jlesage/build-local.sh \
+            jlesage/rootfs/startapp.sh \
+            jlesage/rootfs/usr/local/bin/prepare-subtitleedit \
+            scripts/*.sh
+
+      - name: Validate source patches
+        run: |
+          git apply --numstat \
+            jlesage/patches/avalonia-12.1.0-window-hints.patch
+          git apply --numstat \
+            jlesage/patches/subtitleedit-5.1.0.patch
 
       - name: Validate Unraid XML
         run: xmllint --noout unraid/my-subtitleedit.xml
 
       - name: Validate Compose configuration
-        env:
-          SUBTITLE_EDIT_PASSWORD: validation-only
         run: |
           docker compose -f compose.yaml config --quiet
           docker compose -f compose.yaml -f compose.gpu.yaml config --quiet
@@ -44,4 +50,8 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Run Dockerfile build checks
-        run: docker buildx build --call=check .
+        run: |
+          docker buildx build \
+            --call=check \
+            --file jlesage/Dockerfile \
+            .

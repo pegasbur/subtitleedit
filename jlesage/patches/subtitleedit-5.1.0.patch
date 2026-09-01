@@ -1,0 +1,24 @@
+diff --git a/src/ui/Logic/VideoPlayers/LibMpvDynamic/LibMpvDynamicPlayer.cs b/src/ui/Logic/VideoPlayers/LibMpvDynamic/LibMpvDynamicPlayer.cs
+index dc0328b..f986ce3 100644
+--- a/src/ui/Logic/VideoPlayers/LibMpvDynamic/LibMpvDynamicPlayer.cs
++++ b/src/ui/Logic/VideoPlayers/LibMpvDynamic/LibMpvDynamicPlayer.cs
+@@ -471,6 +471,7 @@ public sealed class LibMpvDynamicPlayer : IDisposable, IVideoPlayer
+         // Set mpv to use OpenGL render API for all platforms
+         SetOptionString("vo", "libmpv");
+         SetOptionString("gpu-api", "opengl");
++        SetOptionString("hwdec", "auto");
+ 
+         // On Linux, do NOT force gpu-context.  Avalonia (11.x) has no native
+         // Wayland backend — it always provides an X11/XWayland OpenGL context,
+diff --git a/src/ui/UI.csproj b/src/ui/UI.csproj
+index e79719d..eb3a216 100644
+--- a/src/ui/UI.csproj
++++ b/src/ui/UI.csproj
+@@ -24,6 +24,7 @@
+ 		<PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0" />
+ 		<PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.0" />
+ 		<PackageReference Include="Avalonia.Desktop" Version="12.1.0" />
++             <PackageReference Include="Avalonia.X11" Version="12.1.1-local.1" />
+ 		<PackageReference Include="Avalonia.Markup.Declarative" Version="12.1.0" />
+ 		<PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.0" />
+ 		<PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.0" />

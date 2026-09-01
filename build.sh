@@ -2,65 +2,59 @@
 set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "${repo_dir}"
+
+if (( $# != 0 )); then
+  echo "Usage: ./build.sh" >&2
+  echo "Only the stable Subtitle Edit channel is built." >&2
+  exit 2
+fi
 
 # shellcheck disable=SC1091
 source "${repo_dir}/versions.env"
 
-channel="${1:-stable}"
 image_name="${IMAGE_NAME:-pegasbur/subtitleedit}"
+channel_tag="${CHANNEL_TAG:-latest}"
+version_tag="${SUBTITLE_EDIT_STABLE_VERSION}-r${SUBTITLE_EDIT_JLESAGE_REVISION}"
+build_date="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+vcs_ref="$(git -C "${repo_dir}" rev-parse HEAD 2>/dev/null || printf 'local')"
 
-case "${channel}" in
-  stable)
-    subtitle_edit_version="${SUBTITLE_EDIT_STABLE_VERSION}"
-    subtitle_edit_sha256="${SUBTITLE_EDIT_STABLE_SHA256}"
-    image_revision="${SUBTITLE_EDIT_STABLE_REVISION}"
-    channel_tag="latest"
-    ;;
-  beta)
-    subtitle_edit_version="${SUBTITLE_EDIT_BETA_VERSION}"
-    subtitle_edit_sha256="${SUBTITLE_EDIT_BETA_SHA256}"
-    image_revision="${SUBTITLE_EDIT_BETA_REVISION}"
-    channel_tag="beta"
-    ;;
-  *)
-    echo "Usage: ./build.sh [stable|beta]" >&2
-    exit 2
-    ;;
-esac
-
-for digest in \
-  "${subtitle_edit_sha256}" \
-  "${SUBTITLE_EDIT_ICON_SHA256}"
-do
-  if [[ ! "${digest}" =~ ^[0-9a-f]{64}$ ]]; then
-    echo "Invalid SHA-256 value: ${digest}" >&2
+for image in "${DOTNET_SDK_IMAGE}" "${JLESAGE_IMAGE}"; do
+  if [[ ! "${image}" =~ @sha256:[0-9a-f]{64}$ ]]; then
+    echo "Image is not pinned by digest: ${image}" >&2
     exit 1
   fi
 done
 
-if [[ ! "${SELKIES_IMAGE}" =~ @sha256:[0-9a-f]{64}$ ]]; then
-  echo "SELKIES_IMAGE must include an immutable sha256 digest." >&2
+for commit in "${SUBTITLE_EDIT_STABLE_COMMIT}" "${AVALONIA_COMMIT}"; do
+  if [[ ! "${commit}" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "Invalid Git commit: ${commit}" >&2
+    exit 1
+  fi
+done
+
+if [[ ! "${AVALONIA_X11_NUPKG_SHA256}" =~ ^[0-9a-f]{64}$ ]]; then
+  echo "Invalid Avalonia.X11 package SHA-256." >&2
   exit 1
 fi
 
-version_tag="${subtitle_edit_version}-r${image_revision}"
-build_date="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-vcs_ref="$(git rev-parse HEAD 2>/dev/null || printf 'local')"
-
 docker build \
   --pull \
-  --build-arg "BASE_IMAGE=${SELKIES_IMAGE}" \
+  --file "${repo_dir}/jlesage/Dockerfile" \
+  --build-arg "DOTNET_SDK_IMAGE=${DOTNET_SDK_IMAGE}" \
+  --build-arg "BASE_IMAGE=${JLESAGE_IMAGE}" \
   --build-arg "BUILD_DATE=${build_date}" \
   --build-arg "VCS_REF=${vcs_ref}" \
-  --build-arg "IMAGE_REVISION=${image_revision}" \
-  --build-arg "SELKIES_VERSION=${SELKIES_VERSION}" \
-  --build-arg "SUBTITLE_EDIT_VERSION=${subtitle_edit_version}" \
-  --build-arg "SUBTITLE_EDIT_SHA256=${subtitle_edit_sha256}" \
-  --build-arg "SUBTITLE_EDIT_ICON_SHA256=${SUBTITLE_EDIT_ICON_SHA256}" \
+  --build-arg "IMAGE_REVISION=${SUBTITLE_EDIT_JLESAGE_REVISION}" \
+  --build-arg "SUBTITLE_EDIT_VERSION=${SUBTITLE_EDIT_STABLE_VERSION}" \
+  --build-arg "SUBTITLE_EDIT_COMMIT=${SUBTITLE_EDIT_STABLE_COMMIT}" \
+  --build-arg "AVALONIA_VERSION=${AVALONIA_VERSION}" \
+  --build-arg "AVALONIA_COMMIT=${AVALONIA_COMMIT}" \
+  --build-arg "AVALONIA_X11_PACKAGE_VERSION=${AVALONIA_X11_PACKAGE_VERSION}" \
+  --build-arg "AVALONIA_X11_NUPKG_SHA256=${AVALONIA_X11_NUPKG_SHA256}" \
   --tag "${image_name}:${version_tag}" \
   --tag "${image_name}:${channel_tag}" \
-  .
+  "${repo_dir}"
 
 echo
-echo "Built ${image_name}:${version_tag} and ${image_name}:${channel_tag}"
+echo "Built ${image_name}:${version_tag}"
+echo "Built ${image_name}:${channel_tag}"

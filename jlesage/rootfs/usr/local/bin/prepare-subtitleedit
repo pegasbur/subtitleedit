@@ -1,0 +1,55 @@
+#!/bin/sh
+set -eu
+
+config_root="${CONFIG_ROOT:-/config}"
+xdg_config_home="${XDG_CONFIG_HOME:-${config_root}/xdg/config}"
+tessdata_target="${TESSDATA_PREFIX:-${config_root}/tessdata}"
+
+legacy_subtitleedit="${config_root}/.config/Subtitle Edit"
+current_subtitleedit="${xdg_config_home}/Subtitle Edit"
+migration_marker="${config_root}/.subtitleedit-jlesage-migrated"
+
+if [ -d "${legacy_subtitleedit}" ] &&
+   [ ! -e "${migration_marker}" ]; then
+    echo "Migrating legacy Subtitle Edit configuration..."
+
+    mkdir -p "${current_subtitleedit}"
+
+    cp -a \
+      --update=none \
+      "${legacy_subtitleedit}/." \
+      "${current_subtitleedit}/"
+
+    legacy_bookmarks="${config_root}/.config/gtk-3.0/bookmarks"
+    current_bookmarks="${xdg_config_home}/gtk-3.0/bookmarks"
+
+    if [ -f "${legacy_bookmarks}" ] &&
+       [ ! -e "${current_bookmarks}" ]; then
+        mkdir -p "$(dirname "${current_bookmarks}")"
+        cp -a "${legacy_bookmarks}" "${current_bookmarks}"
+    fi
+
+    touch "${migration_marker}"
+    echo "Legacy Subtitle Edit configuration migrated."
+fi
+
+mkdir -p "${tessdata_target}"
+
+eng_model="$(
+  find /usr/share/tesseract-ocr \
+    -type f \
+    -name eng.traineddata \
+    -print \
+    -quit \
+    2>/dev/null ||
+    true
+)"
+
+if [ -n "${eng_model}" ]; then
+    tessdata_source="$(dirname "${eng_model}")"
+
+    cp -a \
+      --update=none \
+      "${tessdata_source}/." \
+      "${tessdata_target}/"
+fi

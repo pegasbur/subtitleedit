@@ -1,0 +1,36 @@
+diff --git a/src/Avalonia.X11/X11Window.cs b/src/Avalonia.X11/X11Window.cs
+index cece8e8..ff75aa3 100644
+--- a/src/Avalonia.X11/X11Window.cs
++++ b/src/Avalonia.X11/X11Window.cs
+@@ -347,27 +347,26 @@ private void UpdateMotifHints()
+                 || _windowDecorations == WindowDecorations.None) 
+                 decorations = 0;
+ 
+-            var isDisabled = !IsEnabled;
+ 
+-            if (!_canResize || isDisabled)
++            if (!_canResize)
+             {
+                 functions &= ~MotifFunctions.Resize;
+                 decorations &= ~MotifDecorations.ResizeH;
+             }
+ 
+-            if (!_canMinimize || isDisabled)
++            if (!_canMinimize)
+             {
+                 functions &= ~MotifFunctions.Minimize;
+                 decorations &= ~MotifDecorations.Minimize;
+             }
+ 
+-            if (!_canMaximize || isDisabled)
++            if (!_canMaximize)
+             {
+                 functions &= ~MotifFunctions.Maximize;
+                 decorations &= ~MotifDecorations.Maximize;
+             }
+ 
+-            UpdateSizeHints(null, isDisabled);
++            UpdateSizeHints(null);
+ 
+             var hints = new MotifWmHints
+             {

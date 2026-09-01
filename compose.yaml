@@ -1,20 +1,19 @@
 services:
-  subtitleedit-test:
-    image: "${SUBTITLE_EDIT_IMAGE:-pegasbur/subtitleedit:latest}"
-    container_name: subtitleedit-test
+  subtitleedit:
+    image: "${SUBTITLE_EDIT_IMAGE:-ghcr.io/pegasbur/subtitleedit:latest}"
+    container_name: "${SUBTITLE_EDIT_CONTAINER_NAME:-subtitleedit}"
     environment:
-      PUID: "99"
-      PGID: "100"
+      USER_ID: "99"
+      GROUP_ID: "100"
       TZ: "Etc/UTC"
-      TITLE: "Subtitle Edit Test"
-      CUSTOM_USER: "subtitleedit"
-      PASSWORD: "${SUBTITLE_EDIT_PASSWORD:?Set SUBTITLE_EDIT_PASSWORD in .env}"
-      AUTO_GPU: "true"
-      START_DOCKER: "false"
+      WEB_AUDIO: "1"
+      KEEP_APP_RUNNING: "1"
+      DISPLAY_WIDTH: "1920"
+      DISPLAY_HEIGHT: "1080"
     volumes:
-      - /mnt/user/appdata/subtitleedit-test:/config
-      - /mnt/user/data:/data
+      - "${SUBTITLE_EDIT_CONFIG_PATH:-/mnt/user/appdata/subtitleedit}:/config"
+      - "${SUBTITLE_EDIT_DATA_PATH:-/mnt/user/data}:/data"
     ports:
-      - "${SUBTITLE_EDIT_HTTPS_PORT:-3101}:3001"
+      - "${SUBTITLE_EDIT_HTTP_PORT:-3001}:5800"
     shm_size: "1gb"
     restart: unless-stopped

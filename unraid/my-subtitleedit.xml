@@ -10,32 +10,48 @@
   <Privileged>false</Privileged>
   <Support>https://github.com/pegasbur/subtitleedit/issues</Support>
   <Project>https://github.com/pegasbur/subtitleedit</Project>
-  <Overview>Run native Linux Subtitle Edit in a web browser. Includes FFmpeg, MPV, Tesseract OCR, persistent settings and optional GPU acceleration. No Wine or virtual machine is used.</Overview>
+  <Overview>Run native Linux Subtitle Edit in a web browser. Includes FFmpeg, libmpv, Tesseract OCR, browser audio, GTK file chooser integration, persistent settings, and Intel/AMD hardware video decoding. No Wine or virtual machine is used.</Overview>
   <Category>MediaApp:Video Tools:</Category>
-  <WebUI>https://[IP]:[PORT:3001]/</WebUI>
+  <WebUI>http://[IP]:[PORT:5800]/</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/pegasbur/subtitleedit/main/unraid/my-subtitleedit.xml</TemplateURL>
   <Icon>https://raw.githubusercontent.com/pegasbur/subtitleedit/main/unraid/icon.png</Icon>
   <ExtraParams>--shm-size=1g</ExtraParams>
   <PostArgs/>
   <CPUset/>
-  <Requires>AMD64 Unraid. CPU mode needs no GPU setting. Intel/AMD: set the optional GPU device to /dev/dri. NVIDIA: install the Unraid Nvidia Driver and set Extra Parameters to --runtime=nvidia --gpus all --shm-size=1g. Direct HTTPS uses a self-signed certificate.</Requires>
+  <Requires>AMD64 Unraid. Map /dev/dri for Intel or AMD hardware acceleration. CPU-only operation remains available without a GPU device. Proprietary NVIDIA drivers are not supported by the jlesage GUI stack. Keep the Web UI on a trusted LAN, Tailscale, or behind a secured reverse proxy.</Requires>
+
   <Branch>
     <Tag>latest</Tag>
-    <TagDescription>Latest tested stable Subtitle Edit release. Recommended for normal use.</TagDescription>
+    <TagDescription>Latest tested stable Subtitle Edit release.</TagDescription>
   </Branch>
-  <Branch>
-    <Tag>beta</Tag>
-    <TagDescription>Latest tested Subtitle Edit beta. Use a separate appdata directory when evaluating it.</TagDescription>
-  </Branch>
-  <Config Name="Web UI HTTPS" Target="3001" Default="3001" Mode="tcp" Description="Direct HTTPS access using Selkies' self-signed certificate. Change the host port if 3001 is already in use." Type="Port" Display="always" Required="true" Mask="false">3001</Config>
-  <Config Name="Appdata" Target="/config" Default="/mnt/user/appdata/subtitleedit" Mode="rw" Description="Persistent Subtitle Edit settings, desktop configuration, OCR databases, and downloaded models." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/subtitleedit</Config>
+
+  <Config Name="Web UI" Target="5800" Default="3001" Mode="tcp" Description="Browser interface over HTTP. The default host port remains 3001 for compatibility with earlier releases." Type="Port" Display="always" Required="true" Mask="false">3001</Config>
+
+  <Config Name="Appdata" Target="/config" Default="/mnt/user/appdata/subtitleedit" Mode="rw" Description="Persistent Subtitle Edit settings, GTK bookmarks, OCR databases, downloaded language models, and GUI state." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/subtitleedit</Config>
+
   <Config Name="Media" Target="/data" Default="/mnt/user/data" Mode="rw" Description="Media and subtitle files. Select files under /data inside Subtitle Edit." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/data</Config>
-  <Config Name="PUID" Target="PUID" Default="99" Mode="" Description="Unraid nobody user ID." Type="Variable" Display="advanced" Required="true" Mask="false">99</Config>
-  <Config Name="PGID" Target="PGID" Default="100" Mode="" Description="Unraid users group ID." Type="Variable" Display="advanced" Required="true" Mask="false">100</Config>
-  <Config Name="Timezone" Target="TZ" Default="Etc/UTC" Mode="" Description="Container timezone." Type="Variable" Display="advanced" Required="true" Mask="false">Etc/UTC</Config>
-  <Config Name="Web username" Target="CUSTOM_USER" Default="subtitleedit" Mode="" Description="Selkies HTTP Basic Authentication username." Type="Variable" Display="always" Required="true" Mask="false">subtitleedit</Config>
-  <Config Name="Web password" Target="PASSWORD" Default="" Mode="" Description="Selkies HTTP Basic Authentication password. Do not leave blank." Type="Variable" Display="always-hide" Required="true" Mask="true"></Config>
-  <Config Name="Intel/AMD GPU device (optional)" Target="/dev/dri" Default="" Mode="rw" Description="Enter /dev/dri for Intel/AMD acceleration. Leave blank for CPU mode or NVIDIA; NVIDIA uses the Extra Parameters field instead." Type="Device" Display="advanced" Required="false" Mask="false"></Config>
-  <Config Name="Automatic GPU" Target="AUTO_GPU" Default="true" Mode="" Description="Automatically use the first GPU made available to the container for rendering and browser-stream encoding." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
-  <Config Name="Disable nested Docker" Target="START_DOCKER" Default="false" Mode="" Description="Keep Docker-in-Docker disabled." Type="Variable" Display="advanced" Required="true" Mask="false">false</Config>
+
+  <Config Name="User ID" Target="USER_ID" Default="99" Mode="" Description="Numeric ID used to access mapped files. Unraid normally uses 99." Type="Variable" Display="advanced" Required="true" Mask="false">99</Config>
+
+  <Config Name="Group ID" Target="GROUP_ID" Default="100" Mode="" Description="Numeric group ID used to access mapped files. Unraid normally uses 100." Type="Variable" Display="advanced" Required="true" Mask="false">100</Config>
+
+  <Config Name="Timezone" Target="TZ" Default="Etc/UTC" Mode="" Description="Container timezone, for example Europe/Zurich." Type="Variable" Display="advanced" Required="true" Mask="false">Etc/UTC</Config>
+
+  <Config Name="Browser audio" Target="WEB_AUDIO" Default="1" Mode="" Description="Stream Subtitle Edit audio through the browser. The browser may require one click before allowing playback." Type="Variable" Display="advanced" Required="true" Mask="false">1</Config>
+
+  <Config Name="Keep application running" Target="KEEP_APP_RUNNING" Default="1" Mode="" Description="Restart Subtitle Edit inside the container if its main window is closed." Type="Variable" Display="advanced" Required="true" Mask="false">1</Config>
+
+  <Config Name="Initial display width" Target="DISPLAY_WIDTH" Default="1920" Mode="" Description="Initial virtual desktop width in pixels. Browser remote resizing can adjust it later." Type="Variable" Display="advanced" Required="true" Mask="false">1920</Config>
+
+  <Config Name="Initial display height" Target="DISPLAY_HEIGHT" Default="1080" Mode="" Description="Initial virtual desktop height in pixels. Browser remote resizing can adjust it later." Type="Variable" Display="advanced" Required="true" Mask="false">1080</Config>
+
+  <Config Name="Intel/AMD GPU device (optional)" Target="/dev/dri" Default="" Mode="rw" Description="Enter /dev/dri to enable Intel or AMD rendering and hardware video decoding. Leave blank for CPU-only operation." Type="Device" Display="advanced" Required="false" Mask="false"></Config>
+
+  <Config Name="Secure connection (optional)" Target="SECURE_CONNECTION" Default="0" Mode="" Description="Set to 1 for direct HTTPS with a generated self-signed certificate. Normally leave disabled when HTTPS is provided by a trusted reverse proxy." Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+
+  <Config Name="Web authentication (optional)" Target="WEB_AUTHENTICATION" Default="0" Mode="" Description="Set to 1 to enable jlesage web authentication. Direct authentication also requires Secure connection to be enabled." Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+
+  <Config Name="Web authentication username" Target="WEB_AUTHENTICATION_USERNAME" Default="" Mode="" Description="Optional username used when web authentication is enabled." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+
+  <Config Name="Web authentication password" Target="WEB_AUTHENTICATION_PASSWORD" Default="" Mode="" Description="Optional password used when web authentication is enabled." Type="Variable" Display="advanced-hide" Required="false" Mask="true"></Config>
 </Container>

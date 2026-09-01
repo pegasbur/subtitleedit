@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Subtitle Edit
-Comment=Subtitle editor
-Exec=/usr/local/bin/subtitleedit
-Icon=/usr/share/selkies/www/icon.png
-Terminal=false
-Categories=AudioVideo;Utility;
-
