@@ -8,7 +8,7 @@ Unraid users should follow the main [README](../README.md).
 Keep the repository in a persistent development share rather than appdata:
 
 ```text
-/mnt/user/development/subtitle-edit
+/mnt/user/development/subtitleedit
 ```
 
 ## Runtime stack
@@ -41,9 +41,9 @@ Build beta:
 Tags include the channel and an immutable release/revision tag:
 
 ```text
-pegasbur/subtitle-edit:latest
-pegasbur/subtitle-edit:VERSION-rREVISION
-pegasbur/subtitle-edit:beta
+pegasbur/subtitleedit:latest
+pegasbur/subtitleedit:VERSION-rREVISION
+pegasbur/subtitleedit:beta
 ```
 
 The first build downloads the Selkies base, Ubuntu packages, and Subtitle Edit.
@@ -76,7 +76,7 @@ docker compose \
 The test instance uses separate appdata and direct HTTPS port `3101`:
 
 ```text
-/mnt/user/appdata/subtitle-edit-test
+/mnt/user/appdata/subtitleedit-test
 https://UNRAID-IP:3101
 ```
 
@@ -91,8 +91,8 @@ scripts/check-versions.sh
 Update Subtitle Edit and its published asset digest:
 
 ```bash
-scripts/update-subtitle-edit.sh stable
-scripts/update-subtitle-edit.sh beta
+scripts/update-subtitleedit.sh stable
+scripts/update-subtitleedit.sh beta
 ```
 
 Update Selkies and its immutable manifest digest:
@@ -124,12 +124,12 @@ Before publishing either channel, verify at minimum:
 Useful checks:
 
 ```bash
-docker exec subtitle-edit-test ffmpeg -version
-docker exec subtitle-edit-test ffmpeg -hide_banner -hwaccels
-docker exec subtitle-edit-test mpv --version
-docker exec subtitle-edit-test tesseract --version
-docker exec subtitle-edit-test ldconfig -p | grep libmpv
-docker logs -f subtitle-edit-test
+docker exec subtitleedit-test ffmpeg -version
+docker exec subtitleedit-test ffmpeg -hide_banner -hwaccels
+docker exec subtitleedit-test mpv --version
+docker exec subtitleedit-test tesseract --version
+docker exec subtitleedit-test ldconfig -p | grep libmpv
+docker logs -f subtitleedit-test
 ```
 
 ## Publishing
@@ -138,7 +138,7 @@ Every push to `main` runs repository validation. The manual `Publish image`
 GitHub Actions workflow builds AMD64 and publishes to:
 
 ```text
-ghcr.io/pegasbur/subtitle-edit
+ghcr.io/pegasbur/subtitleedit
 ```
 
 Choose `stable` or `beta` when running the workflow. Stable publishes `latest`

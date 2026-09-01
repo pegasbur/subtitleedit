@@ -28,7 +28,7 @@ jobs:
             scripts/*.sh \
             root/defaults/autostart \
             root/defaults/autostart_wayland \
-            root/usr/local/bin/prepare-subtitle-edit
+            root/usr/local/bin/prepare-subtitleedit
 
       - name: Validate Unraid XML
         run: xmllint --noout unraid/my-subtitleedit.xml

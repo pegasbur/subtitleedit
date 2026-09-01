@@ -14,14 +14,14 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 LABEL org.opencontainers.image.title="Subtitle Edit for Unraid" \
       org.opencontainers.image.description="Native Linux Subtitle Edit with a Selkies browser desktop" \
-      org.opencontainers.image.source="https://github.com/pegasbur/subtitle-edit" \
-      org.opencontainers.image.url="https://github.com/pegasbur/subtitle-edit" \
-      org.opencontainers.image.documentation="https://github.com/pegasbur/subtitle-edit#readme" \
+      org.opencontainers.image.source="https://github.com/pegasbur/subtitleedit" \
+      org.opencontainers.image.url="https://github.com/pegasbur/subtitleedit" \
+      org.opencontainers.image.documentation="https://github.com/pegasbur/subtitleedit#readme" \
       org.opencontainers.image.version="${SUBTITLE_EDIT_VERSION}-r${IMAGE_REVISION}" \
       org.opencontainers.image.revision="${VCS_REF}" \
       org.opencontainers.image.created="${BUILD_DATE}" \
       io.pegasbur.selkies.version="${SELKIES_VERSION}" \
-      io.pegasbur.subtitle-edit.version="${SUBTITLE_EDIT_VERSION}" \
+      io.pegasbur.subtitleedit.version="${SUBTITLE_EDIT_VERSION}" \
       io.pegasbur.multimedia.source="Ubuntu Resolute repositories"
 
 ENV TITLE="Subtitle Edit" \

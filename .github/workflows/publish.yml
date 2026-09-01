@@ -45,7 +45,7 @@ jobs:
           fi
 
           version_tag="${subtitle_edit_version}-r${IMAGE_REVISION}"
-          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/subtitle-edit"
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/subtitleedit"
 
           {
             echo "subtitle_edit_version=${subtitle_edit_version}"

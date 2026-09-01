@@ -1,6 +1,6 @@
 #!/bin/bash
 
-/usr/local/bin/prepare-subtitle-edit
+/usr/local/bin/prepare-subtitleedit
 
 if [ ! -f "${HOME}/Desktop/subtitleedit.desktop" ]; then
   cp /usr/share/applications/subtitleedit.desktop "${HOME}/Desktop/"

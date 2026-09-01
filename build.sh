@@ -8,7 +8,7 @@ cd "${repo_dir}"
 source "${repo_dir}/versions.env"
 
 channel="${1:-stable}"
-image_name="${IMAGE_NAME:-pegasbur/subtitle-edit}"
+image_name="${IMAGE_NAME:-pegasbur/subtitleedit}"
 
 case "${channel}" in
   stable)

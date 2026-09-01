@@ -11,8 +11,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/pegasbur/subtitle-edit/actions/workflows/validate.yml"><img alt="Repository validation" src="https://github.com/pegasbur/subtitle-edit/actions/workflows/validate.yml/badge.svg?branch=main"></a>
-  <a href="https://github.com/users/pegasbur/packages/container/package/subtitle-edit"><img alt="Container image" src="https://img.shields.io/badge/GHCR-container-2496ED?logo=docker&logoColor=white"></a>
+  <a href="https://github.com/pegasbur/subtitleedit/actions/workflows/validate.yml"><img alt="Repository validation" src="https://github.com/pegasbur/subtitleedit/actions/workflows/validate.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/users/pegasbur/packages/container/package/subtitleedit"><img alt="Container image" src="https://img.shields.io/badge/GHCR-container-2496ED?logo=docker&logoColor=white"></a>
   <img alt="Unraid compatible" src="https://img.shields.io/badge/Unraid-compatible-F15A2C?logo=unraid&logoColor=white">
   <img alt="Architecture amd64" src="https://img.shields.io/badge/architecture-amd64-555555">
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2ea44f"></a>
@@ -57,8 +57,8 @@ install the user template from an Unraid terminal:
 
 ```bash
 curl -fsSL \
-  https://raw.githubusercontent.com/pegasbur/subtitle-edit/main/unraid/my-subtitle-edit.xml \
-  -o /boot/config/plugins/dockerMan/templates-user/my-subtitle-edit.xml
+  https://raw.githubusercontent.com/pegasbur/subtitleedit/main/unraid/my-subtitleedit.xml \
+  -o /boot/config/plugins/dockerMan/templates-user/my-subtitleedit.xml
 ```
 
 Then open **Docker > Add Container** and select **Subtitle Edit** from the
@@ -80,23 +80,23 @@ if `3001` is already used by another container.
 Create persistent folders and run the stable image:
 
 ```bash
-mkdir -p /srv/subtitle-edit/config /srv/media
+mkdir -p /srv/subtitleedit/config /srv/media
 
 docker run -d \
-  --name subtitle-edit \
+  --name subtitleedit \
   --restart unless-stopped \
   --shm-size=1g \
   -p 3001:3001 \
   -e PUID=1000 \
   -e PGID=1000 \
   -e TZ=Etc/UTC \
-  -e CUSTOM_USER=subtitle-edit \
+  -e CUSTOM_USER=subtitleedit \
   -e PASSWORD='replace-with-a-strong-password' \
   -e AUTO_GPU=true \
   -e START_DOCKER=false \
-  -v /srv/subtitle-edit/config:/config \
+  -v /srv/subtitleedit/config:/config \
   -v /srv/media:/data \
-  ghcr.io/pegasbur/subtitle-edit:latest
+  ghcr.io/pegasbur/subtitleedit:latest
 ```
 
 Change the two host paths, timezone, user/group IDs, username, and password for
@@ -125,12 +125,12 @@ X11; in the Docker command above, replace `-e AUTO_GPU=true` with:
 
 | Image tag | Intended use |
 |---|---|
-| `ghcr.io/pegasbur/subtitle-edit:latest` | Latest tested stable Subtitle Edit release; recommended |
-| `ghcr.io/pegasbur/subtitle-edit:beta` | Latest tested beta; useful for new Linux fixes and features |
+| `ghcr.io/pegasbur/subtitleedit:latest` | Latest tested stable Subtitle Edit release; recommended |
+| `ghcr.io/pegasbur/subtitleedit:beta` | Latest tested beta; useful for new Linux fixes and features |
 
 Use a separate `/config` directory when evaluating the beta, such as
-`/mnt/user/appdata/subtitle-edit-beta` on Unraid or
-`/srv/subtitle-edit-beta/config` on Docker. A beta may change settings in ways
+`/mnt/user/appdata/subtitleedit-beta` on Unraid or
+`/srv/subtitleedit-beta/config` on Docker. A beta may change settings in ways
 that are not safe to downgrade.
 
 ## Included software
@@ -179,7 +179,7 @@ The container paths are the same on Unraid and Docker:
 
 | Unraid host path | Container path | Purpose |
 |---|---|---|
-| `/mnt/user/appdata/subtitle-edit` | `/config` | Settings and models |
+| `/mnt/user/appdata/subtitleedit` | `/config` | Settings and models |
 | `/mnt/user/data` | `/data` | Media and subtitles |
 
 Open media from `/data` inside Subtitle Edit. Files stored elsewhere inside the
@@ -219,7 +219,7 @@ Pull the chosen channel, remove the old container, and recreate it with the same
 options and volume mappings:
 
 ```bash
-docker pull ghcr.io/pegasbur/subtitle-edit:latest
+docker pull ghcr.io/pegasbur/subtitleedit:latest
 ```
 
 Docker Compose users can use `docker compose pull` followed by
@@ -234,7 +234,7 @@ Internet.
 Port `3001` provides direct HTTPS access. Port `3000` is the internal HTTP port
 for a reverse proxy and normally does not need a host-port mapping. A reverse
 proxy sharing a Docker network with this container can proxy to
-`subtitle-edit:3000`.
+`subtitleedit:3000`.
 
 ## Known Linux limitation
 
@@ -250,7 +250,7 @@ the raw Export button.
 ## Support and development
 
 Report container, image, or Unraid-template problems in this repository's
-[issue tracker](https://github.com/pegasbur/subtitle-edit/issues). Application
+[issue tracker](https://github.com/pegasbur/subtitleedit/issues). Application
 bugs should be reported to Subtitle Edit after confirming they are not specific
 to this container.
 

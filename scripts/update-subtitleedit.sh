@@ -14,7 +14,7 @@ case "${channel}" in
     variable_prefix='SUBTITLE_EDIT_BETA'
     ;;
   *)
-    echo "Usage: scripts/update-subtitle-edit.sh [stable|beta]" >&2
+    echo "Usage: scripts/update-subtitleedit.sh [stable|beta]" >&2
     exit 2
     ;;
 esac
