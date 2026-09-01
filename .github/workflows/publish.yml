@@ -37,14 +37,16 @@ jobs:
           if [[ "${CHANNEL}" == "stable" ]]; then
             subtitle_edit_version="${SUBTITLE_EDIT_STABLE_VERSION}"
             subtitle_edit_sha256="${SUBTITLE_EDIT_STABLE_SHA256}"
+            image_revision="${SUBTITLE_EDIT_STABLE_REVISION}"
             channel_tag="latest"
           else
             subtitle_edit_version="${SUBTITLE_EDIT_BETA_VERSION}"
             subtitle_edit_sha256="${SUBTITLE_EDIT_BETA_SHA256}"
+            image_revision="${SUBTITLE_EDIT_BETA_REVISION}"
             channel_tag="beta"
           fi
 
-          version_tag="${subtitle_edit_version}-r${IMAGE_REVISION}"
+          version_tag="${subtitle_edit_version}-r${image_revision}"
           image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/subtitleedit"
 
           {
@@ -61,7 +63,7 @@ jobs:
             echo "BASE_IMAGE=${SELKIES_IMAGE}"
             echo "BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
             echo "VCS_REF=${GITHUB_SHA}"
-            echo "IMAGE_REVISION=${IMAGE_REVISION}"
+            echo "IMAGE_REVISION=${image_revision}"
             echo "SELKIES_VERSION=${SELKIES_VERSION}"
             echo "SUBTITLE_EDIT_VERSION=${subtitle_edit_version}"
             echo "SUBTITLE_EDIT_SHA256=${subtitle_edit_sha256}"

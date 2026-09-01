@@ -43,4 +43,4 @@ echo
 echo "Updated versions.env:"
 grep -E '^SELKIES_(VERSION|IMAGE)=' "${versions_file}"
 echo
-echo "Review the change and increment IMAGE_REVISION before publishing a new base."
+echo "Review the change and increment the revision for each channel you rebuild."

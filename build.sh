@@ -14,11 +14,13 @@ case "${channel}" in
   stable)
     subtitle_edit_version="${SUBTITLE_EDIT_STABLE_VERSION}"
     subtitle_edit_sha256="${SUBTITLE_EDIT_STABLE_SHA256}"
+    image_revision="${SUBTITLE_EDIT_STABLE_REVISION}"
     channel_tag="latest"
     ;;
   beta)
     subtitle_edit_version="${SUBTITLE_EDIT_BETA_VERSION}"
     subtitle_edit_sha256="${SUBTITLE_EDIT_BETA_SHA256}"
+    image_revision="${SUBTITLE_EDIT_BETA_REVISION}"
     channel_tag="beta"
     ;;
   *)
@@ -42,7 +44,7 @@ if [[ ! "${SELKIES_IMAGE}" =~ @sha256:[0-9a-f]{64}$ ]]; then
   exit 1
 fi
 
-version_tag="${subtitle_edit_version}-r${IMAGE_REVISION}"
+version_tag="${subtitle_edit_version}-r${image_revision}"
 build_date="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 vcs_ref="$(git rev-parse HEAD 2>/dev/null || printf 'local')"
 
@@ -51,7 +53,7 @@ docker build \
   --build-arg "BASE_IMAGE=${SELKIES_IMAGE}" \
   --build-arg "BUILD_DATE=${build_date}" \
   --build-arg "VCS_REF=${vcs_ref}" \
-  --build-arg "IMAGE_REVISION=${IMAGE_REVISION}" \
+  --build-arg "IMAGE_REVISION=${image_revision}" \
   --build-arg "SELKIES_VERSION=${SELKIES_VERSION}" \
   --build-arg "SUBTITLE_EDIT_VERSION=${subtitle_edit_version}" \
   --build-arg "SUBTITLE_EDIT_SHA256=${subtitle_edit_sha256}" \

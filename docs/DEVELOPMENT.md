@@ -101,10 +101,11 @@ Update Selkies and its immutable manifest digest:
 scripts/update-selkies.sh
 ```
 
-Review `versions.env` after every updater. Increment `IMAGE_REVISION` when the
-container changes without a new Subtitle Edit version. Rebuilding against an
-updated Selkies base obtains the matched Ubuntu package set available in that
-base.
+Review `versions.env` after every updater. Each channel has its own container
+revision. A new upstream Subtitle Edit version starts at `r1`; increment only
+that channel's revision when the container changes without another upstream
+version change. Rebuilding against an updated Selkies base obtains the matched
+Ubuntu package set available in that base.
 
 ## Release validation
 

@@ -139,7 +139,7 @@ that are not safe to downgrade.
 |---|---:|
 | [LinuxServer Selkies](https://github.com/linuxserver/docker-baseimage-selkies) | `42176703-ls42` (Ubuntu Resolute) |
 | [Subtitle Edit](https://github.com/SubtitleEdit/subtitleedit) stable | `5.1.0` |
-| [Subtitle Edit](https://github.com/SubtitleEdit/subtitleedit) beta | `5.2.0-beta30` |
+| [Subtitle Edit](https://github.com/SubtitleEdit/subtitleedit) beta | `5.2.0-beta31` |
 | [FFmpeg/FFprobe](https://github.com/FFmpeg/FFmpeg) | `8.0.1` (Ubuntu package) |
 | [libplacebo](https://code.videolan.org/videolan/libplacebo) | `7.360.0` (Ubuntu package) |
 | [MPV/libmpv](https://github.com/mpv-player/mpv) | `0.41.0` (Ubuntu package) |
@@ -239,13 +239,40 @@ proxy sharing a Docker network with this container can proxy to
 ## Known Linux limitation
 
 In current testing, the **Export** button in the Blu-ray/M2TS transport-stream
-track picker does not reliably save a raw `.sup` file on Linux. Stable 5.1.0 may
-close the application; beta 5.2.0-beta30 remains open but may not display a save
-dialog. This occurs under both Wayland and X11.
+track picker does not reliably save a raw `.sup` file on Linux. Stable 5.1.0 and
+beta 5.2.0-beta31 may close the application; tested beta30 sometimes remained
+open without displaying a save dialog. This occurs under both Wayland and X11.
 
 To convert a graphical subtitle track to SRT, select the track, click **OK**, run
-OCR, and then use **File > Save As**. That workflow works and does not require
-the raw Export button.
+OCR, and then use **File > Save As**. This workflow works without exporting a
+raw `.sup` file first.
+
+As a workaround when the standalone `.sup` file is required, use the included
+FFprobe and FFmpeg tools. First list the subtitle streams:
+
+```bash
+docker exec subtitleedit \
+  ffprobe -v error \
+  -select_streams s \
+  -show_entries stream=index,codec_name:stream_tags=language,title \
+  -of compact=p=0:nk=0 \
+  '/data/path/to/input.m2ts'
+```
+
+Then extract the required PGS stream using its absolute stream index. For
+example, to extract stream index `4`:
+
+```bash
+docker exec subtitleedit \
+  ffmpeg -hide_banner -y \
+  -i '/data/path/to/input.m2ts' \
+  -map 0:4 \
+  -c copy \
+  '/data/path/to/output.sup'
+```
+
+The extracted `.sup` file can be opened, OCR-processed, and exported normally
+in Subtitle Edit. Replace `subtitleedit` if the container has a different name.
 
 ## Support and development
 

@@ -2,6 +2,7 @@
 set -euo pipefail
 
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+versions_file="${repo_dir}/versions.env"
 channel="${1:-}"
 
 case "${channel}" in
@@ -34,10 +35,18 @@ if [[ -z "${version}" || ! "${digest}" =~ ^[0-9a-f]{64}$ ]]; then
   exit 1
 fi
 
+current_version="$(sed -n "s/^${variable_prefix}_VERSION=//p" "${versions_file}")"
+
 sed -i -E \
   -e "s/^${variable_prefix}_VERSION=.*/${variable_prefix}_VERSION=${version}/" \
   -e "s/^${variable_prefix}_SHA256=.*/${variable_prefix}_SHA256=${digest}/" \
-  "${repo_dir}/versions.env"
+  "${versions_file}"
+
+if [[ "${version}" != "${current_version}" ]]; then
+  sed -i -E \
+    "s/^${variable_prefix}_REVISION=.*/${variable_prefix}_REVISION=1/" \
+    "${versions_file}"
+fi
 
 echo "Pinned ${channel} to Subtitle Edit ${version}"
 git -C "${repo_dir}" diff -- versions.env
