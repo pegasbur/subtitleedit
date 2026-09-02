@@ -245,7 +245,7 @@ COPY --chmod=755 \
   /usr/local/bin/prepare-subtitleedit
 
 COPY --chmod=644 \
-  jlesage/rootfs/etc/openbox/main-window-selection.xml \
+  jlesage/rootfs/etc/openbox/main-window-selection.conf \
   /etc/openbox/main-window-selection.xml
 
 RUN \

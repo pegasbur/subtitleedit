@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Container version="2">
   <Beta>False</Beta>
-  <Name>subtitleedit</Name>
+  <Name>Subtitle Edit</Name>
   <Repository>ghcr.io/pegasbur/subtitleedit:latest</Repository>
   <Registry>https://github.com/users/pegasbur/packages/container/package/subtitleedit</Registry>
   <Network>bridge</Network>

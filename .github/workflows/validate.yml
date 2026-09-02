@@ -39,7 +39,7 @@ jobs:
             jlesage/patches/subtitleedit-5.1.0.patch
 
       - name: Validate Unraid XML
-        run: xmllint --noout unraid/my-subtitleedit.xml
+        run: xmllint --noout ca_profile.xml unraid/my-subtitleedit.xml
 
       - name: Validate Compose configuration
         run: |
