@@ -1,7 +1,7 @@
 <p align="center">
   <a href="https://github.com/SubtitleEdit/subtitleedit"><img src="https://avatars.githubusercontent.com/u/3008853?s=80&amp;v=4" alt="Subtitle Edit" width="80" height="80"></a>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://unraid.net/"><img src="https://drive.google.com/thumbnail?id=1Q_6rprU_k6c6JeETcrkwqAq3weu7_zu-&amp;sz=w160" alt="Unraid" width="80" height="80"></a>
+  <a href="https://drive.google.com/file/d/1Q_6rprU_k6c6JeETcrkwqAq3weu7_zu-/view?usp=drive_link"><img src="https://drive.google.com/thumbnail?id=1Q_6rprU_k6c6JeETcrkwqAq3weu7_zu-&amp;sz=w160" alt="Unraid" width="80" height="80"></a>
 </p>
 
 <h1 align="center">Subtitle Edit for Unraid &amp; Docker</h1>
@@ -146,7 +146,7 @@ docker compose \
 |---|---|
 | `ghcr.io/pegasbur/subtitleedit:latest` | Current tested Subtitle Edit release |
 | `ghcr.io/pegasbur/subtitleedit:5.1.0` | Current application-version tag |
-| `ghcr.io/pegasbur/subtitleedit:5.1.0-r5` | Immutable application and container-revision tag |
+| `ghcr.io/pegasbur/subtitleedit:5.1.0-r6` | Immutable application and container-revision tag |
 
 ## Included software
 

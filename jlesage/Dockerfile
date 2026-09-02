@@ -138,7 +138,7 @@ FROM ${BASE_IMAGE}
 
 ARG BUILD_DATE
 ARG VCS_REF=local
-ARG IMAGE_REVISION=5
+ARG IMAGE_REVISION=6
 ARG SUBTITLE_EDIT_VERSION=5.1.0
 
 LABEL org.opencontainers.image.title="Subtitle Edit" \
@@ -171,9 +171,11 @@ RUN \
     i965-va-driver \
     intel-media-va-driver \
     libfontconfig1 \
+    libgl1 \
     libice6 \
     libicu78 \
     libmpv2 \
+    libopenblas0 \
     libsm6 \
     mesa-libgallium \
     mpv \
