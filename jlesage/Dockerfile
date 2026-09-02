@@ -7,6 +7,7 @@ FROM ${DOTNET_SDK_IMAGE} AS builder
 
 ARG SUBTITLE_EDIT_VERSION=5.1.0
 ARG SUBTITLE_EDIT_COMMIT=38f1dd4bac6c70bdf1f2d1bb5952aa414c6cb777
+ARG GIT_HTTP_VERSION
 ARG AVALONIA_VERSION=12.1.0
 ARG AVALONIA_COMMIT=a21b9f573172f705a944dcc8aad7f036b9986f39
 ARG AVALONIA_X11_PACKAGE_VERSION=12.1.1-local.1
@@ -37,7 +38,9 @@ RUN \
 
 RUN \
   echo "**** fetch Avalonia ${AVALONIA_VERSION} source ****" && \
-  git config --global http.version HTTP/1.1 && \
+  if [ -n "${GIT_HTTP_VERSION}" ]; then \
+    git config --global http.version "${GIT_HTTP_VERSION}"; \
+  fi && \
   git clone \
     --depth 1 \
     --branch "${AVALONIA_VERSION}" \
