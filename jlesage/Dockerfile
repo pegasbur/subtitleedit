@@ -37,6 +37,7 @@ RUN \
 
 RUN \
   echo "**** fetch Avalonia ${AVALONIA_VERSION} source ****" && \
+  git config --global http.version HTTP/1.1 && \
   git clone \
     --depth 1 \
     --branch "${AVALONIA_VERSION}" \
