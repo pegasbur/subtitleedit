@@ -33,6 +33,7 @@ The primary tested platform is AMD64 Unraid, but the image can also run on an AM
 - [Image tags](#image-tags)
 - [Included software](#included-software)
 - [CPU and GPU setup](#cpu-and-gpu-setup)
+- [Browser interface](#browser-interface)
 - [Files and persistence](#files-and-persistence)
 - [OCR engines](#ocr-engines)
 - [Updating](#updating)
@@ -175,6 +176,15 @@ A GPU is optional. Subtitle Edit remains usable through CPU/software operation w
 NVIDIA GPU acceleration is not supported by the jlesage GUI stack, so NVIDIA systems use CPU/software fallback.
 
 GPU access can accelerate desktop rendering and supported video decoding. It does not make Tesseract or CPU-based optional OCR engines use the GPU.
+
+## Browser interface
+
+The browser interface is provided by the jlesage noVNC-based GUI stack.
+
+- Web access uses container port `5800`.
+- Native VNC is available on container port `5900`, but is not mapped by default.
+- The side panel provides audio, clipboard, scaling, quality, and logging controls.
+- Remote resizing adapts the virtual desktop to the browser window.
 
 ## Files and persistence
 
