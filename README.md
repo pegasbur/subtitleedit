@@ -1,7 +1,7 @@
 <p align="center">
   <a href="https://github.com/SubtitleEdit/subtitleedit"><img src="https://avatars.githubusercontent.com/u/3008853?s=80&amp;v=4" alt="Subtitle Edit" width="80" height="80"></a>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://drive.google.com/file/d/1NfrtbOFIzg65KY1YeLBZSlTsuGQQCmbr/view"><img src="https://drive.usercontent.google.com/download?id=1NfrtbOFIzg65KY1YeLBZSlTsuGQQCmbr&amp;export=view" alt="Unraid" width="80" height="80"></a>
+  <a href="https://drive.google.com/file/d/1NfrtbOFIzg65KY1YeLBZSlTsuGQQCmbr/view"><img src="https://drive.google.com/thumbnail?id=1NfrtbOFIzg65KY1YeLBZSlTsuGQQCmbr&sz=w256" alt="Unraid" width="80" height="80"></a>
 </p>
 
 <h1 align="center">Subtitle Edit for Unraid &amp; Docker</h1>
