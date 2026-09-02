@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<CommunityApplications>
+  <Profile>
+    Subtitle Edit for Unraid provides the native Linux Subtitle Edit desktop application in a browser-accessible Docker container. This repository maintains the Unraid template, container image, documentation, and release metadata. Support is available through the repository's GitHub Issues page.
+  </Profile>
+  <Icon>https://raw.githubusercontent.com/pegasbur/subtitleedit/main/unraid/icon.png</Icon>
+  <WebPage>https://github.com/pegasbur/subtitleedit</WebPage>
+  <Forum>https://github.com/pegasbur/subtitleedit/issues</Forum>
+</CommunityApplications>
