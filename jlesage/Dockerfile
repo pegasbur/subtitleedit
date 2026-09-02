@@ -80,6 +80,8 @@ RUN \
   grep -Fq \
     "<version>${AVALONIA_X11_PACKAGE_VERSION}</version>" \
     /build/avalonia-package/Avalonia.X11.nuspec && \
+  rm -f \
+    /build/avalonia-package/.signature.p7s && \
   cd /build/avalonia-package && \
   zip -qr \
     "/build/local-feed/Avalonia.X11.${AVALONIA_X11_PACKAGE_VERSION}.nupkg" \
@@ -136,7 +138,7 @@ FROM ${BASE_IMAGE}
 
 ARG BUILD_DATE
 ARG VCS_REF=local
-ARG IMAGE_REVISION=4
+ARG IMAGE_REVISION=5
 ARG SUBTITLE_EDIT_VERSION=5.1.0
 
 LABEL org.opencontainers.image.title="Subtitle Edit" \
