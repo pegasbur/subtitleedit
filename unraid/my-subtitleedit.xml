@@ -18,7 +18,6 @@
   <ExtraParams>--shm-size=1g</ExtraParams>
   <PostArgs/>
   <CPUset/>
-  <Requires>AMD64 Unraid. Map /dev/dri for Intel or AMD hardware acceleration. CPU-only operation remains available without a GPU device. Proprietary NVIDIA drivers are not supported by the jlesage GUI stack. Keep the Web UI on a trusted LAN, Tailscale, or behind a secured reverse proxy.</Requires>
 
   <Branch>
     <Tag>latest</Tag>
