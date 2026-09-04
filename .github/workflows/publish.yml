@@ -64,7 +64,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: jlesage/Dockerfile
+          file: container/Dockerfile
           platforms: linux/amd64
           push: true
           pull: true

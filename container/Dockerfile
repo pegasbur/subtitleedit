@@ -25,8 +25,8 @@ RUN \
     zip && \
   rm -rf /var/lib/apt/lists/*
 
-COPY jlesage/patches/avalonia-12.1.0-window-hints.patch /tmp/patches/
-COPY jlesage/patches/subtitleedit-5.1.0.patch /tmp/patches/
+COPY container/patches/avalonia-12.1.0-window-hints.patch /tmp/patches/
+COPY container/patches/subtitleedit-5.1.0.patch /tmp/patches/
 
 RUN \
   echo \
@@ -241,15 +241,15 @@ RUN \
   ldconfig -p | grep -F 'libmpv.so'
 
 COPY --chmod=755 \
-  jlesage/rootfs/startapp.sh \
+  container/rootfs/startapp.sh \
   /startapp.sh
 
 COPY --chmod=755 \
-  jlesage/rootfs/usr/local/bin/prepare-subtitleedit \
+  container/rootfs/usr/local/bin/prepare-subtitleedit \
   /usr/local/bin/prepare-subtitleedit
 
 COPY --chmod=644 \
-  jlesage/rootfs/etc/openbox/main-window-selection.conf \
+  container/rootfs/etc/openbox/main-window-selection.conf \
   /etc/openbox/main-window-selection.xml
 
 RUN \

@@ -26,17 +26,17 @@ jobs:
         run: |
           shellcheck \
             build.sh \
-            jlesage/build-local.sh \
-            jlesage/rootfs/startapp.sh \
-            jlesage/rootfs/usr/local/bin/prepare-subtitleedit \
+            container/build-local.sh \
+            container/rootfs/startapp.sh \
+            container/rootfs/usr/local/bin/prepare-subtitleedit \
             scripts/*.sh
 
       - name: Validate source patches
         run: |
           git apply --numstat \
-            jlesage/patches/avalonia-12.1.0-window-hints.patch
+            container/patches/avalonia-12.1.0-window-hints.patch
           git apply --numstat \
-            jlesage/patches/subtitleedit-5.1.0.patch
+            container/patches/subtitleedit-5.1.0.patch
 
       - name: Validate Unraid XML
         run: xmllint --noout ca_profile.xml unraid/my-subtitleedit.xml
@@ -53,5 +53,5 @@ jobs:
         run: |
           docker buildx build \
             --call=check \
-            --file jlesage/Dockerfile \
+            --file container/Dockerfile \
             .

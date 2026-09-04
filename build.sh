@@ -39,7 +39,7 @@ fi
 
 docker build \
   --pull \
-  --file "${repo_dir}/jlesage/Dockerfile" \
+  --file "${repo_dir}/container/Dockerfile" \
   --build-arg "DOTNET_SDK_IMAGE=${DOTNET_SDK_IMAGE}" \
   --build-arg "BASE_IMAGE=${JLESAGE_IMAGE}" \
   --build-arg "BUILD_DATE=${build_date}" \
