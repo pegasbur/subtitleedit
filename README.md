@@ -150,19 +150,24 @@ docker compose \
 
 ## Included software
 
-| Component | Version or source |
-|---|---|
-| [Subtitle Edit](https://github.com/SubtitleEdit/subtitleedit) | `5.1.0` |
-| [jlesage browser GUI](https://github.com/jlesage/docker-baseimage-gui) | `ubuntu-26.04-v4` |
-| [Avalonia](https://github.com/AvaloniaUI/Avalonia) | `12.1.0` with an X11 compatibility patch |
-| [.NET](https://github.com/dotnet/runtime) | `10.0`, self-contained |
-| [FFmpeg/FFprobe](https://ffmpeg.org/) | Ubuntu 26.04 package |
-| [MPV/libmpv](https://github.com/mpv-player/mpv) | Ubuntu 26.04 package |
-| [libplacebo](https://code.videolan.org/videolan/libplacebo) | Ubuntu 26.04 package |
-| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) | Ubuntu 26.04 package |
-| [Intel media driver](https://github.com/intel/media-driver) and [Mesa](https://www.mesa3d.org/) | Ubuntu 26.04 VA-API packages |
+| Component | Version | Purpose |
+|---|---|---|
+| [Subtitle Edit](https://github.com/SubtitleEdit/subtitleedit) | `5.1.0` | Main subtitle editing application |
+| [jlesage browser GUI](https://github.com/jlesage/docker-baseimage-gui) | `ubuntu-26.04-v4` | Browser-accessible Linux desktop, VNC, audio, and web interface |
+| [Avalonia](https://github.com/AvaloniaUI/Avalonia) | `12.1.0` | Cross-platform UI framework used by Subtitle Edit |
+| [.NET](https://dotnet.microsoft.com/) | `10.0` | Self-contained application runtime |
+| [FFmpeg / FFprobe](https://ffmpeg.org/) * | `8.0.1-3ubuntu2` | Media probing, decoding, extraction, conversion, and waveform-related processing |
+| [MPV / libmpv](https://mpv.io/) * | `0.41.0-2ubuntu4` | Video and audio playback inside Subtitle Edit |
+| [libplacebo](https://code.videolan.org/videolan/libplacebo) * | `7.360.0-3` | GPU-assisted video rendering used by the media playback stack |
+| [Intel VA-API drivers](https://github.com/intel/media-driver) * | `26.1.2+dfsg1-1` / `2.4.1+dfsg1-2build1` | Intel hardware-accelerated video decoding when `/dev/dri` is available |
+| [Mesa](https://gitlab.freedesktop.org/mesa/mesa) * | `26.0.8-1ubuntu0.3` | OpenGL and graphics acceleration support |
+| XDG Desktop Portal * | `1.21.1+ds-1ubuntu3` / GTK `1.15.3-2ubuntu1` | Linux desktop integration and file-dialog support |
+| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) * | `5.5.0-1build1` | Optical character recognition for subtitle images |
+| [OpenBLAS](https://www.openblas.net/) * | `0.3.32+ds-5` | Optimized numerical routines used by native numerical/OCR dependencies |
 
-Exact source commits, package checksums, builder images, and runtime images are pinned in `versions.env`.
+\* Supplied by Ubuntu packages in the pinned runtime base image. These package revisions are not individually pinned and may change on later rebuilds as Ubuntu publishes security and maintenance updates.
+
+**Avalonia integration:** Avalonia `12.1.0` is built with a maintained X11 compatibility patch. During the image build, the patched Avalonia.X11 assembly is packaged internally as `12.1.1-local.1` and consumed by Subtitle Edit. This local package is an internal build artifact, not a separately published Avalonia release.
 
 ## CPU and GPU setup
 
