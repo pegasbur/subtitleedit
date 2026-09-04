@@ -1,0 +1,30 @@
+#!/bin/sh
+set -eu
+
+# Subtitle Edit itself must be running.
+pgrep -x subtitleedit >/dev/null
+
+# Probe the browser interface using the configured connection mode.
+scheme="http"
+if [ "${SECURE_CONNECTION:-0}" = "1" ]; then
+    scheme="https"
+fi
+
+http_code="$(
+    curl -ksS \
+        --connect-timeout 2 \
+        --max-time 5 \
+        --output /dev/null \
+        --write-out '%{http_code}' \
+        "${scheme}://127.0.0.1:5800/"
+)"
+
+case "${http_code}" in
+    2??|3??)
+        exit 0
+        ;;
+    *)
+        echo "Unexpected browser HTTP status: ${http_code}" >&2
+        exit 1
+        ;;
+esac
