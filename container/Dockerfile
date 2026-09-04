@@ -238,6 +238,22 @@ RUN \
   ffprobe -version | head -n 1 && \
   mpv --version | head -n 1 && \
   tesseract --version | head -n 1 && \
+  echo "**** behavior-sensitive runtime package versions ****" && \
+  dpkg-query -W -f='${binary:Package}=${Version}\n' \
+    ffmpeg \
+    i965-va-driver \
+    intel-media-va-driver \
+    libgl1 \
+    libicu78 \
+    libmpv2 \
+    libopenblas0 \
+    mesa-libgallium \
+    mpv \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    tesseract-ocr-osd \
+    xdg-desktop-portal \
+    xdg-desktop-portal-gtk && \
   ldconfig -p | grep -F 'libmpv.so'
 
 COPY --chmod=755 \

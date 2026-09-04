@@ -26,7 +26,7 @@ The builder stage:
 
 The runtime stage uses the digest-pinned jlesage GUI base and copies the complete publish output into `/opt/subtitleedit`. FFmpeg/FFprobe, MPV/libmpv, libplacebo, Tesseract, fonts, portal integration, and VA-API drivers are installed from the Ubuntu repositories available in that base image.
 
-The build keeps the application source, framework source, builder image, runtime image, and downloaded package inputs reproducible through immutable Git commits, container digests, and checksums.
+The build pins the application source, framework source, builder image, runtime image, and downloaded package inputs through immutable Git commits, container digests, and checksums. Ubuntu packages intentionally follow the repositories configured by the pinned runtime base image and are covered separately by the reproducibility policy below.
 
 ## Version pins
 
@@ -44,6 +44,27 @@ All maintained pins are stored in `versions.env`:
 
 Container images must remain pinned by manifest digest, Git sources by full commit, and downloaded packages by SHA-256.
 
+## Reproducibility policy
+
+The project aims to make its maintained build inputs reproducible and auditable, but it does not claim that rebuilding the same repository commit at different dates will produce a bit-for-bit identical runtime image.
+
+The following inputs are immutable or explicitly verified:
+
+- the .NET SDK builder image, pinned by OCI manifest digest;
+- the jlesage GUI runtime image, pinned by OCI manifest digest;
+- the Subtitle Edit source, pinned by full Git commit;
+- the Avalonia source, pinned by full Git commit;
+- the official Avalonia.X11 NuGet package, verified by SHA-256;
+- the repository integration patches, version-controlled together with the build definition.
+
+Ubuntu APT packages are intentionally not individually version-pinned. They resolve from the Ubuntu repositories configured by the pinned jlesage base image. This allows rebuilds to receive security and maintenance updates within that Ubuntu release instead of freezing individual packages indefinitely.
+
+Consequently, two builds from the same repository commit performed at different times can contain different Ubuntu package revisions. This is intentional.
+
+Do not add exact APT package versions merely to make rebuilds appear deterministic. Exact package pinning should only be adopted together with a maintained Ubuntu snapshot repository or equivalent immutable package source.
+
+Versions of behavior-sensitive runtime packages are printed during the image build so that the resolved environment is visible in build logs. The OCI image digest identifies the exact produced image, while the generated SBOM and build provenance provide additional traceability for published builds.
+
 ## Compatibility patches
 
 The maintained source patches are:
@@ -53,11 +74,52 @@ container/patches/avalonia-12.1.0-window-hints.patch
 container/patches/subtitleedit-5.1.0.patch
 ```
 
-The Avalonia patch prevents a disabled or modal window state from rewriting the main window’s resize, minimize, maximize, and size hints under X11. This prevents the Subtitle Edit main window from moving when a dialog opens while keeping it resizable.
+These patches serve different purposes and should be reviewed independently whenever Subtitle Edit or Avalonia is updated.
 
-The Subtitle Edit patch selects the locally patched Avalonia.X11 package and enables automatic hardware decoding in libmpv.
+### Avalonia.X11 patch and local package
 
-Rebase and retest both patches whenever Subtitle Edit or Avalonia is updated. Do not carry them forward solely because they still apply cleanly; first confirm whether the upstream behavior still requires them.
+`container/patches/avalonia-12.1.0-window-hints.patch` modifies Avalonia's X11 window handling. It prevents a disabled or modal window state from rewriting the main window's resize, minimize, maximize, and size hints. This prevents the Subtitle Edit main window from moving when a dialog opens while keeping it resizable.
+
+The build:
+
+1. fetches the Avalonia source corresponding to `AVALONIA_VERSION`;
+2. verifies that the checkout resolves exactly to `AVALONIA_COMMIT`;
+3. applies the maintained Avalonia X11 patch;
+4. builds the patched `Avalonia.X11.dll`;
+5. downloads the official Avalonia.X11 NuGet package;
+6. verifies that package against `AVALONIA_X11_NUPKG_SHA256`;
+7. replaces its Avalonia.X11 assembly with the locally built patched assembly;
+8. changes the package version to `AVALONIA_X11_PACKAGE_VERSION`;
+9. rebuilds the package and exposes it only through the build's local NuGet feed.
+
+The resulting `Avalonia.X11 12.1.1-local.1` package is an internal build input, not an official Avalonia NuGet release.
+
+Because the package contents are modified and reconstructed, the resulting package cannot retain a valid upstream NuGet package signature. It must not be presented or re-signed as though it were an official NuGet.org package. Its integrity instead comes from the pinned Avalonia source commit, the SHA-256-verified official NuGet input, the repository-controlled patch, and the resulting container build provenance.
+
+### Subtitle Edit container integration patch
+
+`container/patches/subtitleedit-5.1.0.patch` is the Subtitle Edit container integration patch. It makes two targeted changes to the pinned upstream Subtitle Edit source:
+
+1. it sets libmpv `hwdec` to `auto`, allowing hardware decoding when suitable GPU access is available while preserving software fallback;
+2. it adds an explicit `Avalonia.X11` package reference to `AVALONIA_X11_PACKAGE_VERSION`, causing Subtitle Edit to consume the locally rebuilt patched X11 package described above.
+
+Apart from these targeted container-integration changes, the maintained application source remains the upstream Subtitle Edit source at `SUBTITLE_EDIT_STABLE_COMMIT`.
+
+### Integrity chain
+
+The maintained integrity chain is:
+
+1. digest-pinned builder and runtime container images;
+2. full Git commit pins for Subtitle Edit and Avalonia;
+3. SHA-256 verification of the downloaded official Avalonia.X11 NuGet package;
+4. repository-controlled Avalonia and Subtitle Edit integration patches;
+5. the locally rebuilt Avalonia.X11 package consumed during the same build;
+6. the resulting OCI image digest;
+7. generated SBOM and build provenance for published images.
+
+The patch files are version-controlled build inputs rather than separately downloaded artifacts. Their exact contents are therefore covered by the repository commit recorded in `VCS_REF` and the image provenance.
+
+Rebase and retest both patches whenever Subtitle Edit or Avalonia is updated. Do not carry either patch forward solely because it still applies cleanly. First confirm whether the corresponding upstream behavior still requires it.
 
 ## Local build
 
