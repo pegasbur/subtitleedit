@@ -18,6 +18,12 @@
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2ea44f"></a>
 </p>
 
+<p align="center">
+  <a href="https://buymeacoffee.com/pegasbur">
+    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="45">
+  </a>
+</p>
+
 Subtitle Edit for Unraid packages the native Linux edition of Subtitle Edit with FFmpeg/FFprobe, MPV/libmpv, Tesseract OCR, optional hardware-accelerated video playback and the jlesage browser GUI.
 
 The primary tested platform is AMD64 Unraid, but the image can also run on an AMD64 Linux Docker host.
@@ -38,6 +44,7 @@ The primary tested platform is AMD64 Unraid, but the image can also run on an AM
 - [OCR engines](#ocr-engines)
 - [Updating](#updating)
 - [Network access and security](#network-access-and-security)
+- [Support and development](#support-and-development)
 - [Support and development](#support-and-development)
 
 ## Features
@@ -252,6 +259,18 @@ docker compose up -d
 The WebUI is intended for a trusted LAN, Tailscale, or a secured reverse proxy and should not be exposed directly to the public Internet. It uses HTTP without built-in authentication by default (`SECURE_CONNECTION=0`, `WEB_AUTHENTICATION=0`), although HTTPS and password authentication can be enabled through the corresponding container settings.
 
 ## Support and development
+
+If Subtitle Edit for Unraid and Docker has been useful to you, you can support its continued maintenance and future development.
+
+<p align="center">
+  <a href="https://buymeacoffee.com/pegasbur">
+    <img src="assets/qr-code.png" alt="Buy Me a Coffee QR code" width="240">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://buymeacoffee.com/pegasbur">buymeacoffee.com/pegasbur</a>
+</p>
 
 Report container-image or Unraid-template problems in this repository’s [issue tracker](https://github.com/pegasbur/subtitleedit/issues). Application bugs should be reported to the [Subtitle Edit project](https://github.com/SubtitleEdit/subtitleedit/issues) after confirming that they are not specific to this container.
 
