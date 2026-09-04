@@ -272,8 +272,3 @@ The integration files are MIT licensed. Included software retains its own licens
     <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="45">
   </a>
 </p>
-<p align="center">
-  <a href="https://buymeacoffee.com/pegasbur">
-    <img src="assets/qr-code.png" alt="Buy Me a Coffee QR code" width="240">
-  </a>
-</p>
