@@ -58,8 +58,9 @@ The primary tested platform is AMD64 Unraid, but the image can also run on an AM
 
 ## Quick start on Unraid
 
-The template is being prepared for Community Applications. Until it is listed, install the user template from an Unraid terminal:
+Subtitle Edit is available through **Community Applications**. Search for **Subtitle Edit** in the Apps tab and install it using the provided template.
 
+For manual installation, the user template can still be installed from an Unraid terminal:
 ```bash
 curl -fsSL \
   https://raw.githubusercontent.com/pegasbur/subtitleedit/main/unraid/my-subtitleedit.xml \
@@ -260,20 +261,19 @@ The WebUI is intended for a trusted LAN, Tailscale, or a secured reverse proxy a
 
 ## Support and development
 
-If Subtitle Edit for Unraid and Docker has been useful to you, you can support its continued maintenance and future development.
-
-<p align="center">
-  <a href="https://buymeacoffee.com/pegasbur">
-    <img src="assets/qr-code.png" alt="Buy Me a Coffee QR code" width="240">
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://buymeacoffee.com/pegasbur">buymeacoffee.com/pegasbur</a>
-</p>
-
 Report container-image or Unraid-template problems in this repository’s [issue tracker](https://github.com/pegasbur/subtitleedit/issues). Application bugs should be reported to the [Subtitle Edit project](https://github.com/SubtitleEdit/subtitleedit/issues) after confirming that they are not specific to this container.
 
 Build instructions, version maintenance, validation, and publishing information are available in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
 The integration files are MIT licensed. Included software retains its own licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+<br></br>
+<p align="center">
+  <a href="https://buymeacoffee.com/pegasbur">
+    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="45">
+  </a>
+</p>
+<p align="center">
+  <a href="https://buymeacoffee.com/pegasbur">
+    <img src="assets/qr-code.png" alt="Buy Me a Coffee QR code" width="240">
+  </a>
+</p>
