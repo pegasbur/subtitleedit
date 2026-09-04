@@ -12,14 +12,14 @@ On Unraid, keep the repository in a persistent development share rather than app
 
 ## Build architecture
 
-The image uses a multi-stage build defined in `jlesage/Dockerfile`.
+The image uses a multi-stage build defined in `container/Dockerfile`.
 
 The builder stage:
 
 1. Uses the digest-pinned .NET SDK image from `versions.env`.
 2. Downloads the Subtitle Edit and Avalonia source repositories from their upstream Git repositories.
 3. Verifies that each checkout resolves to its pinned commit.
-4. Applies the repository patches from `jlesage/patches`.
+4. Applies the repository patches from `container/patches`.
 5. Downloads and verifies the official Avalonia.X11 NuGet package.
 6. Repackages the patched Avalonia.X11 assembly under the local package version recorded in `versions.env`.
 7. Publishes a self-contained AMD64 Subtitle Edit application.
@@ -49,8 +49,8 @@ Container images must remain pinned by manifest digest, Git sources by full comm
 The maintained source patches are:
 
 ```text
-jlesage/patches/avalonia-12.1.0-window-hints.patch
-jlesage/patches/subtitleedit-5.1.0.patch
+container/patches/avalonia-12.1.0-window-hints.patch
+container/patches/subtitleedit-5.1.0.patch
 ```
 
 The Avalonia patch prevents a disabled or modal window state from rewriting the main window’s resize, minimize, maximize, and size hints under X11. This prevents the Subtitle Edit main window from moving when a dialog opens while keeping it resizable.
@@ -77,7 +77,7 @@ pegasbur/subtitleedit:VERSION-rREVISION
 The local convenience wrapper uses development-oriented image tags:
 
 ```bash
-jlesage/build-local.sh
+container/build-local.sh
 ```
 
 It produces:
@@ -151,12 +151,12 @@ The .NET SDK digest and Avalonia pins are updated manually. Rebuild the patched 
 Before a runtime test, run:
 
 ```bash
-bash -n build.sh jlesage/build-local.sh scripts/*.sh
+bash -n build.sh container/build-local.sh scripts/*.sh
 git diff --check
 
 docker buildx build \
   --check \
-  --file jlesage/Dockerfile \
+  --file container/Dockerfile \
   .
 
 docker compose -f compose.yaml config --quiet
