@@ -146,7 +146,7 @@ docker compose \
 |---|---|
 | `ghcr.io/pegasbur/subtitleedit:latest` | Current tested Subtitle Edit release |
 | `ghcr.io/pegasbur/subtitleedit:5.1.0` | Current application-version tag |
-| `ghcr.io/pegasbur/subtitleedit:5.1.0-r6` | Immutable application and container-revision tag |
+| `ghcr.io/pegasbur/subtitleedit:5.1.0-r7` | Immutable application and container-revision tag |
 
 ## Included software
 
