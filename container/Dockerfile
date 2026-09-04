@@ -248,6 +248,10 @@ COPY --chmod=755 \
   container/rootfs/usr/local/bin/prepare-subtitleedit \
   /usr/local/bin/prepare-subtitleedit
 
+COPY --chmod=755 \
+  container/rootfs/usr/local/bin/healthcheck \
+  /usr/local/bin/healthcheck
+
 COPY --chmod=644 \
   container/rootfs/etc/openbox/main-window-selection.conf \
   /etc/openbox/main-window-selection.xml
@@ -256,6 +260,13 @@ RUN \
   set-cont-env APP_NAME "Subtitle Edit" && \
   set-cont-env APP_VERSION "${SUBTITLE_EDIT_VERSION}" && \
   set-cont-env DOCKER_IMAGE_VERSION "${SUBTITLE_EDIT_VERSION}-r${IMAGE_REVISION}"
+
+HEALTHCHECK \
+  --interval=30s \
+  --timeout=10s \
+  --start-period=30s \
+  --retries=3 \
+  CMD ["/usr/local/bin/healthcheck"]
 
 EXPOSE 5800 5900
 
