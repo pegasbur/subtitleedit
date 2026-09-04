@@ -1,7 +1,7 @@
 <p align="center">
   <a href="https://github.com/SubtitleEdit/subtitleedit"><img src="https://avatars.githubusercontent.com/u/3008853?s=80&amp;v=4" alt="Subtitle Edit" width="80" height="80"></a>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://drive.google.com/file/d/1NfrtbOFIzg65KY1YeLBZSlTsuGQQCmbr/view"><img src="https://drive.google.com/thumbnail?id=1NfrtbOFIzg65KY1YeLBZSlTsuGQQCmbr&sz=w256" alt="Unraid" width="80" height="80"></a>
+  <a href="https://www.unraid.net"><img src="https://drive.google.com/thumbnail?id=1NfrtbOFIzg65KY1YeLBZSlTsuGQQCmbr&sz=w256" alt="Unraid" width="80" height="80"></a>
 </p>
 
 <h1 align="center">Subtitle Edit for Unraid &amp; Docker</h1>
@@ -18,11 +18,11 @@
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2ea44f"></a>
 </p>
 
-Subtitle Edit for Unraid packages the native Linux edition of Subtitle Edit with FFmpeg/FFprobe, MPV/libmpv, Tesseract OCR, optional hardware-accelerated video playback, and the jlesage browser GUI.
+Subtitle Edit for Unraid packages the native Linux edition of Subtitle Edit with FFmpeg/FFprobe, MPV/libmpv, Tesseract OCR, optional hardware-accelerated video playback and the jlesage browser GUI.
 
 The primary tested platform is AMD64 Unraid, but the image can also run on an AMD64 Linux Docker host.
 
-> This is an unofficial community project. It is not maintained or endorsed by the Subtitle Edit, Unraid, or jlesage projects.
+> This is an unofficial community project. It is not maintained or endorsed by the Subtitle Edit or Unraid.
 
 ## Contents
 
