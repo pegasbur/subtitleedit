@@ -45,7 +45,6 @@ The primary tested platform is AMD64 Unraid, but the image can also run on an AM
 - [Updating](#updating)
 - [Network access and security](#network-access-and-security)
 - [Support and development](#support-and-development)
-- [Support and development](#support-and-development)
 
 ## Features
 
