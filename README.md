@@ -168,7 +168,7 @@ docker compose \
 | [libplacebo](https://code.videolan.org/videolan/libplacebo) * | `7.360.0-3` | GPU-assisted video rendering used by the media playback stack |
 | [Intel VA-API drivers](https://github.com/intel/media-driver) * | `26.1.2+dfsg1-1` / `2.4.1+dfsg1-2build1` | Intel hardware-accelerated video decoding when `/dev/dri` is available |
 | [Mesa](https://gitlab.freedesktop.org/mesa/mesa) * | `26.0.8-1ubuntu0.3` | OpenGL and graphics acceleration support |
-| XDG Desktop Portal * | `1.21.1+ds-1ubuntu3` / GTK `1.15.3-2ubuntu1` | Linux desktop integration and file-dialog support |
+| [XDG Desktop Portal](https://github.com/flatpak/xdg-desktop-portal) * | `1.21.1+ds-1ubuntu3` / [GTK](https://github.com/flatpak/xdg-desktop-portal-gtk) `1.15.3-2ubuntu1` | Linux desktop integration and file-dialog support |
 | [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) * | `5.5.0-1build1` | Optical character recognition for subtitle images |
 | [OpenBLAS](https://www.openblas.net/) * | `0.3.32+ds-5` | Optimized numerical routines used by native numerical/OCR dependencies |
 
