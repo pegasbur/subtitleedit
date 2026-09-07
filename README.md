@@ -20,7 +20,7 @@
 
 <p align="center">
   <a href="https://buymeacoffee.com/pegasbur">
-    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="45">
+    <img src="assets/buy-me-a-coffee.png" alt="Buy Me a Coffee" width="175">
   </a>
 </p>
 
@@ -154,7 +154,7 @@ docker compose \
 |---|---|
 | `ghcr.io/pegasbur/subtitleedit:latest` | Current tested Subtitle Edit release |
 | `ghcr.io/pegasbur/subtitleedit:5.1.0` | Current application-version tag |
-| `ghcr.io/pegasbur/subtitleedit:5.1.0-r7` | Immutable application and container-revision tag |
+| `ghcr.io/pegasbur/subtitleedit:5.1.0-r8` | Immutable application and container-revision tag |
 
 ## Included software
 
@@ -269,6 +269,6 @@ The integration files are MIT licensed. Included software retains its own licens
 <br></br>
 <p align="center">
   <a href="https://buymeacoffee.com/pegasbur">
-    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="45">
+    <img src="assets/buy-me-a-coffee.png" alt="Buy Me a Coffee" width="175">
   </a>
 </p>
