@@ -98,10 +98,11 @@ Because the package contents are modified and reconstructed, the resulting packa
 
 ### Subtitle Edit container integration patch
 
-`container/patches/subtitleedit-5.1.0.patch` is the Subtitle Edit container integration patch. It makes two targeted changes to the pinned upstream Subtitle Edit source:
+`container/patches/subtitleedit-5.1.0.patch` is the Subtitle Edit container integration patch. It makes three targeted changes to the pinned upstream Subtitle Edit source:
 
 1. it sets libmpv `hwdec` to `auto`, allowing hardware decoding when suitable GPU access is available while preserving software fallback;
-2. it adds an explicit `Avalonia.X11` package reference to `AVALONIA_X11_PACKAGE_VERSION`, causing Subtitle Edit to consume the locally rebuilt patched X11 package described above.
+2. it adds an explicit `Avalonia.X11` package reference to `AVALONIA_X11_PACKAGE_VERSION`, causing Subtitle Edit to consume the locally rebuilt patched X11 package described above;
+3. on Linux, it clears the executable-stack flag from Purfview Faster-Whisper-XXL's bundled CTranslate2 libraries immediately after extraction, allowing the engine to load on current glibc versions.
 
 Apart from these targeted container-integration changes, the maintained application source remains the upstream Subtitle Edit source at `SUBTITLE_EDIT_STABLE_COMMIT`.
 

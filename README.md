@@ -20,7 +20,7 @@
 
 <p align="center">
   <a href="https://buymeacoffee.com/pegasbur">
-    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="45">
+    <img src="assets/buy-me-a-coffee.png" alt="Buy Me a Coffee" width="175">
   </a>
 </p>
 
@@ -44,7 +44,6 @@ The primary tested platform is AMD64 Unraid, but the image can also run on an AM
 - [OCR engines](#ocr-engines)
 - [Updating](#updating)
 - [Network access and security](#network-access-and-security)
-- [Support and development](#support-and-development)
 - [Support and development](#support-and-development)
 
 ## Features
@@ -154,7 +153,7 @@ docker compose \
 |---|---|
 | `ghcr.io/pegasbur/subtitleedit:latest` | Current tested Subtitle Edit release |
 | `ghcr.io/pegasbur/subtitleedit:5.1.0` | Current application-version tag |
-| `ghcr.io/pegasbur/subtitleedit:5.1.0-r7` | Immutable application and container-revision tag |
+| `ghcr.io/pegasbur/subtitleedit:5.1.0-r8` | Immutable application and container-revision tag |
 
 ## Included software
 
@@ -169,7 +168,7 @@ docker compose \
 | [libplacebo](https://code.videolan.org/videolan/libplacebo) * | `7.360.0-3` | GPU-assisted video rendering used by the media playback stack |
 | [Intel VA-API drivers](https://github.com/intel/media-driver) * | `26.1.2+dfsg1-1` / `2.4.1+dfsg1-2build1` | Intel hardware-accelerated video decoding when `/dev/dri` is available |
 | [Mesa](https://gitlab.freedesktop.org/mesa/mesa) * | `26.0.8-1ubuntu0.3` | OpenGL and graphics acceleration support |
-| XDG Desktop Portal * | `1.21.1+ds-1ubuntu3` / GTK `1.15.3-2ubuntu1` | Linux desktop integration and file-dialog support |
+| [XDG Desktop Portal](https://github.com/flatpak/xdg-desktop-portal) * | `1.21.1+ds-1ubuntu3` / [GTK](https://github.com/flatpak/xdg-desktop-portal-gtk) `1.15.3-2ubuntu1` | Linux desktop integration and file-dialog support |
 | [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) * | `5.5.0-1build1` | Optical character recognition for subtitle images |
 | [OpenBLAS](https://www.openblas.net/) * | `0.3.32+ds-5` | Optimized numerical routines used by native numerical/OCR dependencies |
 
@@ -269,6 +268,6 @@ The integration files are MIT licensed. Included software retains its own licens
 <br></br>
 <p align="center">
   <a href="https://buymeacoffee.com/pegasbur">
-    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="45">
+    <img src="assets/buy-me-a-coffee.png" alt="Buy Me a Coffee" width="175">
   </a>
 </p>

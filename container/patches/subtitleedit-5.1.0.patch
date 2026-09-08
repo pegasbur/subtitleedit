@@ -1,5 +1,90 @@
+diff --git a/src/ui/Features/Video/SpeechToText/DownloadSpeechToTextEngineViewModel.cs b/src/ui/Features/Video/SpeechToText/DownloadSpeechToTextEngineViewModel.cs
+index bc661c951..bb38cd151 100644
+--- a/src/ui/Features/Video/SpeechToText/DownloadSpeechToTextEngineViewModel.cs
++++ b/src/ui/Features/Video/SpeechToText/DownloadSpeechToTextEngineViewModel.cs
+@@ -173,6 +173,24 @@ public partial class DownloadSpeechToTextEngineViewModel : ObservableObject, ICl
+                 Unpacker.Extract7Zip(tempFileName, dir, "Faster-Whisper-XXL", _cancellationTokenSource, text => ProgressText = text);
+                 StopIndeterminateProgress();
+ 
++                // Purfview's Linux bundle contains CTranslate2 libraries marked as
++                // requiring an executable stack. Recent glibc versions refuse to load
++                // those libraries, so clear the ELF executable-stack flag after extraction.
++                if (OperatingSystem.IsLinux())
++                {
++                    foreach (var libraryPath in Directory.EnumerateFiles(
++                                 dir,
++                                 "libctranslate2*.so*",
++                                 SearchOption.AllDirectories))
++                    {
++                        if (!LinuxHelper.ClearExecutableStack(libraryPath))
++                        {
++                            throw new InvalidOperationException(
++                                $"Unable to clear executable-stack flag from {libraryPath}");
++                        }
++                    }
++                }
++
+                 try
+                 {
+                     File.Delete(tempFileName);
+diff --git a/src/ui/Logic/LinuxHelper.cs b/src/ui/Logic/LinuxHelper.cs
+index f89ccf75d..62d7ec9a1 100644
+--- a/src/ui/Logic/LinuxHelper.cs
++++ b/src/ui/Logic/LinuxHelper.cs
+@@ -77,4 +77,49 @@ public static class LinuxHelper
+             return false;
+         }
+     }
+-}
+\ No newline at end of file
++
++    public static bool ClearExecutableStack(string filePath)
++    {
++        if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
++        {
++            return false;
++        }
++
++        try
++        {
++            using var process = new Process
++            {
++                StartInfo = new ProcessStartInfo
++                {
++                    FileName = "patchelf",
++                    RedirectStandardError = true,
++                    UseShellExecute = false,
++                    CreateNoWindow = true
++                }
++            };
++
++            process.StartInfo.ArgumentList.Add("--clear-execstack");
++            process.StartInfo.ArgumentList.Add(filePath);
++
++            process.Start();
++
++            var error = process.StandardError.ReadToEnd();
++
++            process.WaitForExit();
++
++            if (process.ExitCode != 0)
++            {
++                Console.WriteLine($"patchelf failed for \"{filePath}\": {error}");
++                return false;
++            }
++
++            return true;
++        }
++        catch (Exception ex)
++        {
++            Console.WriteLine($"patchelf execution failed for \"{filePath}\": {ex.Message}");
++            return false;
++        }
++    }
++
++}
 diff --git a/src/ui/Logic/VideoPlayers/LibMpvDynamic/LibMpvDynamicPlayer.cs b/src/ui/Logic/VideoPlayers/LibMpvDynamic/LibMpvDynamicPlayer.cs
-index dc0328b..f986ce3 100644
+index dc0328b87..f986ce35e 100644
 --- a/src/ui/Logic/VideoPlayers/LibMpvDynamic/LibMpvDynamicPlayer.cs
 +++ b/src/ui/Logic/VideoPlayers/LibMpvDynamic/LibMpvDynamicPlayer.cs
 @@ -471,6 +471,7 @@ public sealed class LibMpvDynamicPlayer : IDisposable, IVideoPlayer
@@ -11,7 +96,7 @@ index dc0328b..f986ce3 100644
          // On Linux, do NOT force gpu-context.  Avalonia (11.x) has no native
          // Wayland backend — it always provides an X11/XWayland OpenGL context,
 diff --git a/src/ui/UI.csproj b/src/ui/UI.csproj
-index e79719d..eb3a216 100644
+index e79719d44..eb3a2163b 100644
 --- a/src/ui/UI.csproj
 +++ b/src/ui/UI.csproj
 @@ -24,6 +24,7 @@

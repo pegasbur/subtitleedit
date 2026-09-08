@@ -33,7 +33,7 @@ RUN \
     "24b9585d07b6ac13e3c516d18a1e830e702370144baf60d3486773da56ff807e  /tmp/patches/avalonia-12.1.0-window-hints.patch" \
     | sha256sum -c - && \
   echo \
-    "7535c7ac8b240f83b603c542daad77566831f91f5e9143fd6a98e9d1904eb377  /tmp/patches/subtitleedit-5.1.0.patch" \
+    "466d4e45b876946e131dd64f2a2fbee1012803d83f9bc2648e7b4c1dc84d0648  /tmp/patches/subtitleedit-5.1.0.patch" \
     | sha256sum -c -
 
 RUN \
@@ -109,7 +109,13 @@ RUN \
     src/ui/UI.csproj && \
   grep -Fq \
     'SetOptionString("hwdec", "auto");' \
-    src/ui/Logic/VideoPlayers/LibMpvDynamic/LibMpvDynamicPlayer.cs
+    src/ui/Logic/VideoPlayers/LibMpvDynamic/LibMpvDynamicPlayer.cs && \
+  grep -Fq \
+    'ClearExecutableStack' \
+    src/ui/Logic/LinuxHelper.cs && \
+  grep -Fq \
+    '"libctranslate2*.so*"' \
+    src/ui/Features/Video/SpeechToText/DownloadSpeechToTextEngineViewModel.cs
 
 RUN \
   echo "**** publish patched Subtitle Edit ****" && \
@@ -142,7 +148,7 @@ FROM ${BASE_IMAGE}
 
 ARG BUILD_DATE
 ARG VCS_REF=local
-ARG IMAGE_REVISION=7
+ARG IMAGE_REVISION=8
 ARG SUBTITLE_EDIT_VERSION=5.1.0
 
 LABEL org.opencontainers.image.title="Subtitle Edit" \
@@ -183,6 +189,7 @@ RUN \
     libsm6 \
     mesa-libgallium \
     mpv \
+    patchelf \
     tesseract-ocr \
     tesseract-ocr-eng \
     tesseract-ocr-osd \
@@ -249,6 +256,7 @@ RUN \
     libopenblas0 \
     mesa-libgallium \
     mpv \
+    patchelf \
     tesseract-ocr \
     tesseract-ocr-eng \
     tesseract-ocr-osd \
