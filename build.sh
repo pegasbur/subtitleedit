@@ -14,7 +14,7 @@ source "${repo_dir}/versions.env"
 
 image_name="${IMAGE_NAME:-pegasbur/subtitleedit}"
 channel_tag="${CHANNEL_TAG:-latest}"
-version_tag="${SUBTITLE_EDIT_STABLE_VERSION}-r${SUBTITLE_EDIT_JLESAGE_REVISION}"
+version_tag="${SUBTITLE_EDIT_STABLE_VERSION}-r${SUBTITLE_EDIT_CONTAINER_REVISION}"
 build_date="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 vcs_ref="$(git -C "${repo_dir}" rev-parse HEAD 2>/dev/null || printf 'local')"
 
@@ -44,7 +44,7 @@ docker build \
   --build-arg "BASE_IMAGE=${JLESAGE_IMAGE}" \
   --build-arg "BUILD_DATE=${build_date}" \
   --build-arg "VCS_REF=${vcs_ref}" \
-  --build-arg "IMAGE_REVISION=${SUBTITLE_EDIT_JLESAGE_REVISION}" \
+  --build-arg "IMAGE_REVISION=${SUBTITLE_EDIT_CONTAINER_REVISION}" \
   --build-arg "SUBTITLE_EDIT_VERSION=${SUBTITLE_EDIT_STABLE_VERSION}" \
   --build-arg "SUBTITLE_EDIT_COMMIT=${SUBTITLE_EDIT_STABLE_COMMIT}" \
   --build-arg "AVALONIA_VERSION=${AVALONIA_VERSION}" \

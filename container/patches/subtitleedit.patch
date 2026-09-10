@@ -1,8 +1,8 @@
 diff --git a/src/ui/Features/Video/SpeechToText/DownloadSpeechToTextEngineViewModel.cs b/src/ui/Features/Video/SpeechToText/DownloadSpeechToTextEngineViewModel.cs
-index bc661c951..bb38cd151 100644
+index a26daf1..99987c4 100644
 --- a/src/ui/Features/Video/SpeechToText/DownloadSpeechToTextEngineViewModel.cs
 +++ b/src/ui/Features/Video/SpeechToText/DownloadSpeechToTextEngineViewModel.cs
-@@ -173,6 +173,24 @@ public partial class DownloadSpeechToTextEngineViewModel : ObservableObject, ICl
+@@ -179,6 +179,24 @@ public partial class DownloadSpeechToTextEngineViewModel : ObservableObject, ICl
                  Unpacker.Extract7Zip(tempFileName, dir, "Faster-Whisper-XXL", _cancellationTokenSource, text => ProgressText = text);
                  StopIndeterminateProgress();
  
@@ -28,7 +28,7 @@ index bc661c951..bb38cd151 100644
                  {
                      File.Delete(tempFileName);
 diff --git a/src/ui/Logic/LinuxHelper.cs b/src/ui/Logic/LinuxHelper.cs
-index f89ccf75d..62d7ec9a1 100644
+index f89ccf7..62d7ec9 100644
 --- a/src/ui/Logic/LinuxHelper.cs
 +++ b/src/ui/Logic/LinuxHelper.cs
 @@ -77,4 +77,49 @@ public static class LinuxHelper
@@ -84,26 +84,26 @@ index f89ccf75d..62d7ec9a1 100644
 +
 +}
 diff --git a/src/ui/Logic/VideoPlayers/LibMpvDynamic/LibMpvDynamicPlayer.cs b/src/ui/Logic/VideoPlayers/LibMpvDynamic/LibMpvDynamicPlayer.cs
-index dc0328b87..f986ce35e 100644
+index 6bd68a6..db876ef 100644
 --- a/src/ui/Logic/VideoPlayers/LibMpvDynamic/LibMpvDynamicPlayer.cs
 +++ b/src/ui/Logic/VideoPlayers/LibMpvDynamic/LibMpvDynamicPlayer.cs
-@@ -471,6 +471,7 @@ public sealed class LibMpvDynamicPlayer : IDisposable, IVideoPlayer
+@@ -1386,6 +1386,7 @@ public sealed class LibMpvDynamicPlayer : IDisposable, IVideoPlayer
          // Set mpv to use OpenGL render API for all platforms
          SetOptionString("vo", "libmpv");
          SetOptionString("gpu-api", "opengl");
 +        SetOptionString("hwdec", "auto");
+         SetStartPausedOption();
  
          // On Linux, do NOT force gpu-context.  Avalonia (11.x) has no native
-         // Wayland backend — it always provides an X11/XWayland OpenGL context,
 diff --git a/src/ui/UI.csproj b/src/ui/UI.csproj
-index e79719d44..eb3a2163b 100644
+index 8336ee4..8965ed7 100644
 --- a/src/ui/UI.csproj
 +++ b/src/ui/UI.csproj
-@@ -24,6 +24,7 @@
- 		<PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0" />
- 		<PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.0" />
- 		<PackageReference Include="Avalonia.Desktop" Version="12.1.0" />
-+             <PackageReference Include="Avalonia.X11" Version="12.1.1-local.1" />
- 		<PackageReference Include="Avalonia.Markup.Declarative" Version="12.1.0" />
- 		<PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.0" />
- 		<PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.0" />
+@@ -22,6 +22,7 @@
+ 	<ItemGroup>
+ 		<PackageReference Include="Avalonia" Version="12.1.2" />
+ 		<PackageReference Include="Avalonia.Desktop" Version="12.1.2" />
++		<PackageReference Include="Avalonia.X11" Version="12.1.2.1-local" />
+ 		<PackageReference Include="Avalonia.Markup.Declarative" Version="12.1.1" />
+ 		<PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.2" />
+ 		<PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.2" />

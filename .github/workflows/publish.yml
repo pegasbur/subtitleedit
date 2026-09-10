@@ -24,7 +24,7 @@ jobs:
           # shellcheck disable=SC1091
           source versions.env
 
-          version_tag="${SUBTITLE_EDIT_STABLE_VERSION}-r${SUBTITLE_EDIT_JLESAGE_REVISION}"
+          version_tag="${SUBTITLE_EDIT_STABLE_VERSION}-r${SUBTITLE_EDIT_CONTAINER_REVISION}"
           image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/subtitleedit"
 
           {
@@ -39,7 +39,7 @@ jobs:
             echo "BASE_IMAGE=${JLESAGE_IMAGE}"
             echo "BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
             echo "VCS_REF=${GITHUB_SHA}"
-            echo "IMAGE_REVISION=${SUBTITLE_EDIT_JLESAGE_REVISION}"
+            echo "IMAGE_REVISION=${SUBTITLE_EDIT_CONTAINER_REVISION}"
             echo "SUBTITLE_EDIT_VERSION=${SUBTITLE_EDIT_STABLE_VERSION}"
             echo "SUBTITLE_EDIT_COMMIT=${SUBTITLE_EDIT_STABLE_COMMIT}"
             echo "AVALONIA_VERSION=${AVALONIA_VERSION}"

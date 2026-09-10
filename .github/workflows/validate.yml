@@ -28,15 +28,15 @@ jobs:
             build.sh \
             container/build-local.sh \
             container/rootfs/startapp.sh \
-            container/rootfs/usr/local/bin/prepare-subtitleedit \
-            scripts/*.sh
+            container/rootfs/usr/local/bin/healthcheck \
+            container/rootfs/usr/local/bin/prepare-subtitleedit
 
-      - name: Validate source patches
+      - name: Validate source patch syntax
         run: |
           git apply --numstat \
-            container/patches/avalonia-12.1.0-window-hints.patch
+            container/patches/avalonia-12.1.2-window-hints.patch
           git apply --numstat \
-            container/patches/subtitleedit-5.1.0.patch
+            container/patches/subtitleedit.patch
 
       - name: Validate Unraid XML
         run: xmllint --noout ca_profile.xml unraid/my-subtitleedit.xml

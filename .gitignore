@@ -5,3 +5,5 @@ build/
 build-errors.txt
 *.log.gz
 *.pid
+__pycache__/
+*.pyc

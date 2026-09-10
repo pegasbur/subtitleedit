@@ -24,7 +24,7 @@
   </a>
 </p>
 
-Subtitle Edit for Unraid packages the native Linux edition of Subtitle Edit with FFmpeg/FFprobe, MPV/libmpv, Tesseract OCR, optional hardware-accelerated video playback and the jlesage browser GUI.
+Subtitle Edit for Unraid packages the native Linux edition of [Subtitle Edit](https://github.com/SubtitleEdit/subtitleedit) with FFmpeg/FFprobe, MPV/libmpv, Tesseract OCR, optional hardware-accelerated video playback and the jlesage browser GUI.
 
 The primary tested platform is AMD64 Unraid, but the image can also run on an AMD64 Linux Docker host.
 
@@ -149,32 +149,39 @@ docker compose \
 
 ## Image tags
 
+<!-- generated:image-tags:start -->
 | Image tag | Intended use |
 |---|---|
 | `ghcr.io/pegasbur/subtitleedit:latest` | Current tested Subtitle Edit release |
-| `ghcr.io/pegasbur/subtitleedit:5.1.0` | Current application-version tag |
-| `ghcr.io/pegasbur/subtitleedit:5.1.0-r8` | Immutable application and container-revision tag |
+| `ghcr.io/pegasbur/subtitleedit:5.2.0` | Current application-version tag |
+| `ghcr.io/pegasbur/subtitleedit:5.2.0-r1` | Application and container-revision tag; do not overwrite |
+<!-- generated:image-tags:end -->
 
 ## Included software
 
+<!-- generated:components:start -->
 | Component | Version | Purpose |
 |---|---|---|
-| [Subtitle Edit](https://github.com/SubtitleEdit/subtitleedit) | `5.1.0` | Main subtitle editing application |
+| [Subtitle Edit](https://github.com/SubtitleEdit/subtitleedit) | `5.2.0` | Main subtitle editing application |
 | [jlesage browser GUI](https://github.com/jlesage/docker-baseimage-gui) | `ubuntu-26.04-v4` | Browser-accessible Linux desktop, VNC, audio, and web interface |
-| [Avalonia](https://github.com/AvaloniaUI/Avalonia) | `12.1.0` | Cross-platform UI framework used by Subtitle Edit |
+| [Avalonia](https://github.com/AvaloniaUI/Avalonia) | `12.1.2` | Cross-platform UI framework used by Subtitle Edit |
 | [.NET](https://dotnet.microsoft.com/) | `10.0` | Self-contained application runtime |
-| [FFmpeg / FFprobe](https://ffmpeg.org/) * | `8.0.1-3ubuntu2` | Media probing, decoding, extraction, conversion, and waveform-related processing |
-| [MPV / libmpv](https://mpv.io/) * | `0.41.0-2ubuntu4` | Video and audio playback inside Subtitle Edit |
-| [libplacebo](https://code.videolan.org/videolan/libplacebo) * | `7.360.0-3` | GPU-assisted video rendering used by the media playback stack |
-| [Intel VA-API drivers](https://github.com/intel/media-driver) * | `26.1.2+dfsg1-1` / `2.4.1+dfsg1-2build1` | Intel hardware-accelerated video decoding when `/dev/dri` is available |
-| [Mesa](https://gitlab.freedesktop.org/mesa/mesa) * | `26.0.8-1ubuntu0.3` | OpenGL and graphics acceleration support |
-| [XDG Desktop Portal](https://github.com/flatpak/xdg-desktop-portal) * | `1.21.1+ds-1ubuntu3` / [GTK](https://github.com/flatpak/xdg-desktop-portal-gtk) `1.15.3-2ubuntu1` | Linux desktop integration and file-dialog support |
-| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) * | `5.5.0-1build1` | Optical character recognition for subtitle images |
-| [OpenBLAS](https://www.openblas.net/) * | `0.3.32+ds-5` | Optimized numerical routines used by native numerical/OCR dependencies |
+| [FFmpeg / FFprobe](https://ffmpeg.org/) * | `8.0.1` | Media probing, decoding, extraction, conversion, and waveform-related processing |
+| [MPV / libmpv](https://mpv.io/) * | `0.41.0` | Video and audio playback inside Subtitle Edit |
+| [libplacebo](https://code.videolan.org/videolan/libplacebo) * | `7.360.0` | GPU-assisted video rendering used by the media playback stack |
+| [Intel VA-API drivers](https://github.com/intel/media-driver) * | `26.1.2 / 2.4.1` | Intel hardware-accelerated video decoding when `/dev/dri` is available |
+| [Mesa](https://gitlab.freedesktop.org/mesa/mesa) * | `26.0.8` | OpenGL and graphics acceleration support |
+| [Mesa Vulkan drivers](https://gitlab.freedesktop.org/mesa/mesa) * | `26.0.8` | Vulkan GPU acceleration for supported compute workloads such as CrispASR when a compatible GPU is available |
+| [XDG Desktop Portal](https://github.com/flatpak/xdg-desktop-portal) * | `1.21.1 / 1.15.3` | Linux desktop integration and file-dialog support |
+| [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) * | `5.5.0` | Optical character recognition for subtitle images |
+| [OpenBLAS](https://www.openblas.net/) * | `0.3.32` | Optimized numerical routines used by native numerical/OCR dependencies |
+<!-- generated:components:end -->
 
 \* Supplied by Ubuntu packages in the pinned runtime base image. These package revisions are not individually pinned and may change on later rebuilds as Ubuntu publishes security and maintenance updates.
 
-**Avalonia integration:** Avalonia `12.1.0` is built with a maintained X11 compatibility patch. During the image build, the patched Avalonia.X11 assembly is packaged internally as `12.1.1-local.1` and consumed by Subtitle Edit. This local package is an internal build artifact, not a separately published Avalonia release.
+<!-- generated:avalonia:start -->
+**Avalonia integration:** Avalonia `12.1.2` is built with a maintained X11 compatibility patch. During the image build, the patched Avalonia.X11 assembly is packaged internally as `12.1.2.1-local` and consumed by Subtitle Edit. This local package is an internal build artifact, not a separately published Avalonia release.
+<!-- generated:avalonia:end -->
 
 ## CPU and GPU setup
 
@@ -187,7 +194,7 @@ A GPU is optional. Subtitle Edit remains usable through CPU/software operation w
 
 NVIDIA GPU acceleration is not supported by the jlesage GUI stack, so NVIDIA systems use CPU/software fallback.
 
-GPU access can accelerate desktop rendering and supported video decoding. It does not make Tesseract or CPU-based optional OCR engines use the GPU.
+GPU access can accelerate desktop rendering and supported video decoding. The image also includes Mesa Vulkan drivers, allowing supported compute workloads such as CrispASR's Vulkan backend to use compatible Intel or AMD GPUs when `/dev/dri` is mapped. It does not make Tesseract or CPU-based optional OCR engines use the GPU.
 
 ## Browser interface
 
@@ -262,7 +269,6 @@ The WebUI is intended for a trusted LAN, Tailscale, or a secured reverse proxy a
 
 Report container-image or Unraid-template problems in this repository’s [issue tracker](https://github.com/pegasbur/subtitleedit/issues). Application bugs should be reported to the [Subtitle Edit project](https://github.com/SubtitleEdit/subtitleedit/issues) after confirming that they are not specific to this container.
 
-Build instructions, version maintenance, validation, and publishing information are available in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
 The integration files are MIT licensed. Included software retains its own licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 <br></br>

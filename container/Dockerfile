@@ -5,13 +5,13 @@ ARG BASE_IMAGE=jlesage/baseimage-gui:ubuntu-26.04-v4@sha256:8e839e319c64c203a048
 
 FROM ${DOTNET_SDK_IMAGE} AS builder
 
-ARG SUBTITLE_EDIT_VERSION=5.1.0
-ARG SUBTITLE_EDIT_COMMIT=38f1dd4bac6c70bdf1f2d1bb5952aa414c6cb777
+ARG SUBTITLE_EDIT_VERSION=5.2.0
+ARG SUBTITLE_EDIT_COMMIT=d8e3b8b41e856a896c541ce7e59b490a99c21196
 ARG GIT_HTTP_VERSION
-ARG AVALONIA_VERSION=12.1.0
-ARG AVALONIA_COMMIT=a21b9f573172f705a944dcc8aad7f036b9986f39
-ARG AVALONIA_X11_PACKAGE_VERSION=12.1.1-local.1
-ARG AVALONIA_X11_NUPKG_SHA256=9f6416cd4c3952c0ed3041c8fcc4a46cf16e71d4ad773ff580b0ea551e735bf0
+ARG AVALONIA_VERSION=12.1.2
+ARG AVALONIA_COMMIT=d3c867a9e2de379249b03dbeb3495bd7f076a81a
+ARG AVALONIA_X11_PACKAGE_VERSION=12.1.2.1-local
+ARG AVALONIA_X11_NUPKG_SHA256=96edafff0513ecc19e0a8a1dfea7e38b34eb7fc06ad4d77fc298dcaeb74c58ec
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -25,15 +25,15 @@ RUN \
     zip && \
   rm -rf /var/lib/apt/lists/*
 
-COPY container/patches/avalonia-12.1.0-window-hints.patch /tmp/patches/
-COPY container/patches/subtitleedit-5.1.0.patch /tmp/patches/
+COPY container/patches/avalonia-12.1.2-window-hints.patch /tmp/patches/
+COPY container/patches/subtitleedit.patch /tmp/patches/
 
 RUN \
   echo \
-    "24b9585d07b6ac13e3c516d18a1e830e702370144baf60d3486773da56ff807e  /tmp/patches/avalonia-12.1.0-window-hints.patch" \
+    "24b9585d07b6ac13e3c516d18a1e830e702370144baf60d3486773da56ff807e  /tmp/patches/avalonia-12.1.2-window-hints.patch" \
     | sha256sum -c - && \
   echo \
-    "466d4e45b876946e131dd64f2a2fbee1012803d83f9bc2648e7b4c1dc84d0648  /tmp/patches/subtitleedit-5.1.0.patch" \
+    "74913519f311ab053aba73386ec5c114f0dc7d3e1cddf09d8ded8ea10085f918  /tmp/patches/subtitleedit.patch" \
     | sha256sum -c -
 
 RUN \
@@ -50,9 +50,9 @@ RUN \
   test "$(git rev-parse HEAD)" = "${AVALONIA_COMMIT}" && \
   git submodule update --init --recursive && \
   git apply --check \
-    /tmp/patches/avalonia-12.1.0-window-hints.patch && \
+    /tmp/patches/avalonia-12.1.2-window-hints.patch && \
   git apply \
-    /tmp/patches/avalonia-12.1.0-window-hints.patch && \
+    /tmp/patches/avalonia-12.1.2-window-hints.patch && \
   dotnet build \
     src/Avalonia.X11/Avalonia.X11.csproj \
     --configuration Release \
@@ -101,9 +101,9 @@ RUN \
   cd /build/subtitleedit && \
   test "$(git rev-parse HEAD)" = "${SUBTITLE_EDIT_COMMIT}" && \
   git apply --check \
-    /tmp/patches/subtitleedit-5.1.0.patch && \
+    /tmp/patches/subtitleedit.patch && \
   git apply \
-    /tmp/patches/subtitleedit-5.1.0.patch && \
+    /tmp/patches/subtitleedit.patch && \
   grep -Fq \
     "Avalonia.X11\" Version=\"${AVALONIA_X11_PACKAGE_VERSION}" \
     src/ui/UI.csproj && \
@@ -148,8 +148,8 @@ FROM ${BASE_IMAGE}
 
 ARG BUILD_DATE
 ARG VCS_REF=local
-ARG IMAGE_REVISION=8
-ARG SUBTITLE_EDIT_VERSION=5.1.0
+ARG IMAGE_REVISION=1
+ARG SUBTITLE_EDIT_VERSION=5.2.0
 
 LABEL org.opencontainers.image.title="Subtitle Edit" \
       org.opencontainers.image.description="Native Linux Subtitle Edit with a browser-accessible jlesage GUI" \
@@ -188,6 +188,7 @@ RUN \
     libopenblas0 \
     libsm6 \
     mesa-libgallium \
+    mesa-vulkan-drivers \
     mpv \
     patchelf \
     tesseract-ocr \
@@ -255,6 +256,7 @@ RUN \
     libmpv2 \
     libopenblas0 \
     mesa-libgallium \
+    mesa-vulkan-drivers \
     mpv \
     patchelf \
     tesseract-ocr \
