@@ -8,16 +8,26 @@
   <MyIP/>
   <Shell>bash</Shell>
   <Privileged>false</Privileged>
+
   <Support>https://github.com/pegasbur/subtitleedit/issues</Support>
   <Project>https://github.com/pegasbur/subtitleedit</Project>
+  <ReadMe>https://raw.githubusercontent.com/pegasbur/subtitleedit/main/README.md</ReadMe>
+
   <Overview>Run native Linux Subtitle Edit in a web browser. Includes FFmpeg, libmpv, Tesseract OCR, browser audio, GTK file chooser integration, persistent settings, and Intel/AMD hardware video decoding. No Wine or virtual machine is used.</Overview>
   <Category>MediaApp:Video Tools:</Category>
   <WebUI>http://[IP]:[PORT:5800]/</WebUI>
-  <TemplateURL>https://raw.githubusercontent.com/pegasbur/subtitleedit/main/unraid/my-subtitleedit.xml</TemplateURL>
+
+  <TemplateURL>https://raw.githubusercontent.com/pegasbur/unraid-community-apps/main/templates/subtitleedit.xml</TemplateURL>
   <Icon>https://raw.githubusercontent.com/pegasbur/subtitleedit/main/unraid/icon.png</Icon>
+
   <ExtraParams>--shm-size=1g</ExtraParams>
   <PostArgs/>
   <CPUset/>
+  <DateInstalled/>
+
+  <DonateText>Buy me a coffee</DonateText>
+  <DonateLink>https://buymeacoffee.com/pegasbur</DonateLink>
+  <Requires/>
 
   <Branch>
     <Tag>latest</Tag>
