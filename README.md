@@ -97,11 +97,14 @@ docker run -d \
   --name subtitleedit \
   --restart unless-stopped \
   --shm-size=1g \
-  -p 3001:5800 \
+  -p 5800:5800 \
   -e USER_ID=1000 \
   -e GROUP_ID=1000 \
   -e TZ=Etc/UTC \
   -e WEB_AUDIO=1 \
+  -e WEB_HOST_CLIPBOARD_SYNC=1 \
+  -e WEB_FILE_MANAGER=1 \
+  -e WEB_FILE_MANAGER_ALLOWED_PATHS=AUTO \
   -e KEEP_APP_RUNNING=1 \
   -e DISPLAY_WIDTH=1920 \
   -e DISPLAY_HEIGHT=1080 \
@@ -113,7 +116,7 @@ docker run -d \
 Change the host paths, timezone, and numeric user and group IDs for your system. Then open:
 
 ```text
-http://DOCKER-HOST-IP:3001
+http://DOCKER-HOST-IP:5800
 ```
 
 For Intel or AMD GPU access, add:
