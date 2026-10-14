@@ -96,14 +96,14 @@ index 6bd68a6..db876ef 100644
  
          // On Linux, do NOT force gpu-context.  Avalonia (11.x) has no native
 diff --git a/src/ui/UI.csproj b/src/ui/UI.csproj
-index 8336ee4..8965ed7 100644
 --- a/src/ui/UI.csproj
 +++ b/src/ui/UI.csproj
-@@ -22,6 +22,7 @@
+@@ -21,7 +21,8 @@
+ 
  	<ItemGroup>
- 		<PackageReference Include="Avalonia" Version="12.1.2" />
- 		<PackageReference Include="Avalonia.Desktop" Version="12.1.2" />
-+		<PackageReference Include="Avalonia.X11" Version="12.1.2.1-local" />
+ 		<PackageReference Include="Avalonia" Version="12.1.4" />
+ 		<PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
++		<PackageReference Include="Avalonia.X11" Version="12.1.4.1-local" />
  		<PackageReference Include="Avalonia.Markup.Declarative" Version="12.1.1" />
- 		<PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.2" />
- 		<PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.2" />
+ 		<PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
+ 		<PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.4" />

@@ -62,7 +62,7 @@ Subtitle Edit is available through **Community Applications**. Search for **Subt
 For manual installation, the user template can still be installed from an Unraid terminal:
 ```bash
 curl -fsSL \
-  https://raw.githubusercontent.com/pegasbur/subtitleedit/main/unraid/my-subtitleedit.xml \
+  https://raw.githubusercontent.com/pegasbur/unraid-community-apps/main/templates/subtitleedit.xml \
   -o /boot/config/plugins/dockerMan/templates-user/my-subtitleedit.xml
 ```
 
@@ -153,8 +153,8 @@ docker compose \
 | Image tag | Intended use |
 |---|---|
 | `ghcr.io/pegasbur/subtitleedit:latest` | Current tested Subtitle Edit release |
-| `ghcr.io/pegasbur/subtitleedit:5.2.0` | Current application-version tag |
-| `ghcr.io/pegasbur/subtitleedit:5.2.0-r1` | Application and container-revision tag; do not overwrite |
+| `ghcr.io/pegasbur/subtitleedit:5.3.0` | Current application-version tag |
+| `ghcr.io/pegasbur/subtitleedit:5.3.0-r1` | Application and container-revision tag; do not overwrite |
 <!-- generated:image-tags:end -->
 
 ## Included software
@@ -162,9 +162,9 @@ docker compose \
 <!-- generated:components:start -->
 | Component | Version | Purpose |
 |---|---|---|
-| [Subtitle Edit](https://github.com/SubtitleEdit/subtitleedit) | `5.2.0` | Main subtitle editing application |
+| [Subtitle Edit](https://github.com/SubtitleEdit/subtitleedit) | `5.3.0` | Main subtitle editing application |
 | [jlesage browser GUI](https://github.com/jlesage/docker-baseimage-gui) | `ubuntu-26.04-v4` | Browser-accessible Linux desktop, VNC, audio, and web interface |
-| [Avalonia](https://github.com/AvaloniaUI/Avalonia) | `12.1.2` | Cross-platform UI framework used by Subtitle Edit |
+| [Avalonia](https://github.com/AvaloniaUI/Avalonia) | `12.1.4` | Cross-platform UI framework used by Subtitle Edit |
 | [.NET](https://dotnet.microsoft.com/) | `10.0` | Self-contained application runtime |
 | [FFmpeg / FFprobe](https://ffmpeg.org/) * | `8.0.1` | Media probing, decoding, extraction, conversion, and waveform-related processing |
 | [MPV / libmpv](https://mpv.io/) * | `0.41.0` | Video and audio playback inside Subtitle Edit |
@@ -180,7 +180,7 @@ docker compose \
 \* Supplied by Ubuntu packages in the pinned runtime base image. These package revisions are not individually pinned and may change on later rebuilds as Ubuntu publishes security and maintenance updates.
 
 <!-- generated:avalonia:start -->
-**Avalonia integration:** Avalonia `12.1.2` is built with a maintained X11 compatibility patch. During the image build, the patched Avalonia.X11 assembly is packaged internally as `12.1.2.1-local` and consumed by Subtitle Edit. This local package is an internal build artifact, not a separately published Avalonia release.
+**Avalonia integration:** Avalonia `12.1.4` is built with a maintained X11 compatibility patch. During the image build, the patched Avalonia.X11 assembly is packaged internally as `12.1.4.1-local` and consumed by Subtitle Edit. This local package is an internal build artifact, not a separately published Avalonia release.
 <!-- generated:avalonia:end -->
 
 ## CPU and GPU setup

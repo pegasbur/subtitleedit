@@ -20,7 +20,7 @@ jobs:
       - name: Install validators
         run: |
           sudo apt-get update
-          sudo apt-get install --yes libxml2-utils shellcheck
+          sudo apt-get install --yes shellcheck
 
       - name: Validate shell scripts
         run: |
@@ -33,13 +33,12 @@ jobs:
 
       - name: Validate source patch syntax
         run: |
+          AVALONIA_VERSION="$(sed -n 's/^AVALONIA_VERSION=//p' versions.env)"
+          test -n "$AVALONIA_VERSION"
           git apply --numstat \
-            container/patches/avalonia-12.1.2-window-hints.patch
+            "container/patches/avalonia-${AVALONIA_VERSION}-window-hints.patch"
           git apply --numstat \
             container/patches/subtitleedit.patch
-
-      - name: Validate Unraid XML
-        run: xmllint --noout ca_profile.xml unraid/my-subtitleedit.xml
 
       - name: Validate Compose configuration
         run: |
