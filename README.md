@@ -77,10 +77,10 @@ During installation:
 The default address is:
 
 ```text
-http://UNRAID-IP:3001
+http://UNRAID-IP:5800
 ```
 
-The host port can be changed if `3001` is already used by another container.
+The host port can be changed if `5800` is already used by another container.
 
 ## Quick start with Docker
 
