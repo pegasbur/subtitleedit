@@ -3,6 +3,11 @@ name: Publish stable image
 on:
   workflow_dispatch:
 
+# All dispatch refs share one publication lock; never cancel a running push.
+concurrency:
+  group: publish-stable-image
+  cancel-in-progress: false
+
 permissions:
   contents: read
   packages: write
@@ -29,6 +34,7 @@ jobs:
 
           {
             echo "image=${image}"
+            echo "revision_tag=${version_tag}"
             echo "tags<<EOF"
             echo "${image}:latest"
             echo "${image}:${SUBTITLE_EDIT_STABLE_VERSION}"
@@ -58,6 +64,42 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Require an unused revision tag
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IMAGE: ${{ steps.versions.outputs.image }}
+          REVISION_TAG: ${{ steps.versions.outputs.revision_tag }}
+        run: |
+          set -euo pipefail
+          registry_token="$(
+            curl --fail --silent --show-error \
+              --user "${GITHUB_ACTOR}:${GHCR_TOKEN}" \
+              --get --data-urlencode 'service=ghcr.io' \
+              --data-urlencode "scope=repository:${IMAGE#ghcr.io/}:pull" \
+              https://ghcr.io/token |
+              jq -er '.token | select(type == "string" and length > 0)'
+          )"
+          echo "::add-mask::${registry_token}"
+          response="$(mktemp)"
+          trap 'rm -f "$response"' EXIT
+          status="$(
+            curl --silent --show-error --output "$response" --write-out '%{http_code}' \
+              --header "Authorization: Bearer ${registry_token}" \
+              --header 'Accept: application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json' \
+              "https://ghcr.io/v2/${IMAGE#ghcr.io/}/manifests/${REVISION_TAG}"
+          )"
+          if [[ "$status" == 200 ]]; then
+            echo "::error::Revision tag ${IMAGE}:${REVISION_TAG} already exists; increment the container revision."
+            exit 1
+          fi
+          if [[ "$status" != 404 ]] || ! jq -e '
+            .errors | type == "array" and length > 0 and
+            all(.[]; .code == "MANIFEST_UNKNOWN" or .code == "NAME_UNKNOWN")
+          ' "$response" >/dev/null; then
+            echo "::error::Cannot establish that the revision tag is unused (HTTP ${status}); refusing publication."
+            exit 1
+          fi
 
       - name: Build and publish AMD64 image
         id: build
