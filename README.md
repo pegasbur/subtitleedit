@@ -53,7 +53,6 @@ The primary tested platform is AMD64 Unraid, but the image can also run on an AM
 - Browser audio and GTK file chooser integration
 - Persistent settings, OCR data, downloaded models, and media mappings
 - CPU operation with optional Intel and AMD GPU acceleration
-- Unraid template and standard Docker deployment
 
 ## Quick start on Unraid
 
@@ -144,8 +143,6 @@ Review the image, container name, WebUI port, paths, and user/group IDs in `.env
 
 The default mapping is `5800:5800`. To use another host port, set `SUBTITLE_EDIT_HTTP_PORT` (for example `5801`) and open `http://DOCKER-HOST-IP:5801`. Keep the internal `WEB_LISTENING_PORT` at `5800`, matching the port mapping and image healthcheck.
 
-Existing Compose installations relying on the old implicit host port `3001` will switch to `5800` when recreated with this configuration. To retain port `3001`, explicitly set `SUBTITLE_EDIT_HTTP_PORT=3001` in `.env` before recreating the container.
-
 Start in CPU/software mode:
 
 ```bash
@@ -171,10 +168,11 @@ All three installation methods support the same browser, desktop, and security o
 | `TZ` | `Etc/UTC` |
 | `WEB_AUDIO`, `WEB_HOST_CLIPBOARD_SYNC`, `WEB_FILE_MANAGER` | `1` |
 | `WEB_FILE_MANAGER_ALLOWED_PATHS` | `AUTO` (common and mapped container paths); use a comma-separated list to restrict access |
-| `DARK_MODE`, `KEEP_APP_RUNNING` | `0`, `1` |
+| `DARK_MODE` | `0` |
+| `KEEP_APP_RUNNING` | `1` |
 | `DISPLAY_WIDTH`, `DISPLAY_HEIGHT` | `1920`, `1080`; browser resizing can adjust these later |
 | `WEB_LISTENING_PORT` | `5800`; leave unchanged for the supplied bridge configuration and image healthcheck |
-| `SECURE_CONNECTION`, `WEB_AUTHENTICATION` | `0`, `0`; see [security requirements](#network-access-and-security) before enabling |
+| `SECURE_CONNECTION`, `WEB_AUTHENTICATION` | `0`, `0`; see [security requirements](#network-access-and-security) |
 | `WEB_AUTHENTICATION_TOKEN_VALIDITY_TIME` | `24` hours |
 | `WEB_AUTHENTICATION_USERNAME`, `WEB_AUTHENTICATION_PASSWORD` | Empty; configure privately when enabling authentication |
 
@@ -236,7 +234,6 @@ The browser interface is provided by the jlesage noVNC-based GUI stack.
 - The side panel provides audio, clipboard, scaling, quality, and logging controls.
 - Remote resizing adapts the virtual desktop to the browser window.
 - Host clipboard synchronization depends on browser support, clipboard permissions, and a secure browser context (HTTPS). The side-panel clipboard remains available for manual transfers.
-- Browser audio may need a click before playback is allowed.
 
 ## Files and persistence
 
@@ -300,11 +297,7 @@ docker compose up -d
 
 The WebUI is intended for a trusted LAN, Tailscale, or a secured reverse proxy and should not be exposed directly to the public Internet. It uses HTTP without built-in authentication by default (`SECURE_CONNECTION=0`, `WEB_AUTHENTICATION=0`), with no credentials configured.
 
-For direct HTTPS, set `SECURE_CONNECTION=1` and open `https://HOST-IP:5800` (or your chosen host port). The container generates a self-signed certificate by default; configure a trusted certificate for normal browser trust. HTTPS encrypts the connection but does not enable login protection.
-
-To enable built-in login protection, also set `WEB_AUTHENTICATION=1` and configure a username and password privately, or use the persistent `/config/webauth-htpasswd` password database. Built-in authentication requires `SECURE_CONNECTION=1`; enabling authentication alone is insufficient. Session tokens default to 24 hours. Do not commit real credentials to this repository or share resolved configuration containing them.
-
-When a trusted reverse proxy handles HTTPS and access control, the container can retain its default HTTP/authentication settings on the trusted backend network. To use built-in authentication behind a proxy, configure HTTPS on the container backend as well. See the [jlesage security and authentication documentation](https://github.com/jlesage/docker-baseimage-gui#security) for certificate and credential setup.
+To enable built-in login protection, set `SECURE_CONNECTION=1` and `WEB_AUTHENTICATION=1`, and configure a username and password privately. Session tokens default to 24 hours.
 
 ## Support and development
 
