@@ -77,10 +77,10 @@ During installation:
 The default address is:
 
 ```text
-http://UNRAID-IP:3001
+http://UNRAID-IP:5800
 ```
 
-The host port can be changed if `3001` is already used by another container.
+The host port can be changed if `5800` is already used by another container.
 
 ## Quick start with Docker
 
@@ -105,9 +105,16 @@ docker run -d \
   -e WEB_HOST_CLIPBOARD_SYNC=1 \
   -e WEB_FILE_MANAGER=1 \
   -e WEB_FILE_MANAGER_ALLOWED_PATHS=AUTO \
+  -e DARK_MODE=0 \
   -e KEEP_APP_RUNNING=1 \
   -e DISPLAY_WIDTH=1920 \
   -e DISPLAY_HEIGHT=1080 \
+  -e WEB_LISTENING_PORT=5800 \
+  -e SECURE_CONNECTION=0 \
+  -e WEB_AUTHENTICATION=0 \
+  -e WEB_AUTHENTICATION_TOKEN_VALIDITY_TIME=24 \
+  -e WEB_AUTHENTICATION_USERNAME= \
+  -e WEB_AUTHENTICATION_PASSWORD= \
   -v /srv/subtitleedit/config:/config \
   -v /srv/media:/data \
   ghcr.io/pegasbur/subtitleedit:latest
@@ -133,7 +140,11 @@ Copy the example environment file:
 cp .env.example .env
 ```
 
-Review the image, container name, WebUI port, appdata path, and media path in `.env`.
+Review the image, container name, WebUI port, paths, and user/group IDs in `.env`. Compose defaults to Unraid IDs `99:100`, matching its Unraid host paths. Its existing host path defaults remain `/mnt/user/appdata/subtitleedit` and `/mnt/user/data`. On a generic Linux host, set `USER_ID=1000`, `GROUP_ID=1000`, `SUBTITLE_EDIT_CONFIG_PATH=/srv/subtitleedit/config` and `SUBTITLE_EDIT_DATA_PATH=/srv/media`, as in the Docker Run example. Create those folders before starting.
+
+The default mapping is `5800:5800`. To use another host port, set `SUBTITLE_EDIT_HTTP_PORT` (for example `5801`) and open `http://DOCKER-HOST-IP:5801`. Keep the internal `WEB_LISTENING_PORT` at `5800`, matching the port mapping and image healthcheck.
+
+Existing Compose installations relying on the old implicit host port `3001` will switch to `5800` when recreated with this configuration. To retain port `3001`, explicitly set `SUBTITLE_EDIT_HTTP_PORT=3001` in `.env` before recreating the container.
 
 Start in CPU/software mode:
 
@@ -149,6 +160,23 @@ docker compose \
   -f compose.gpu.yaml \
   up -d
 ```
+
+### Optional configuration
+
+All three installation methods support the same browser, desktop, and security options. Unraid exposes these under advanced settings; Compose reads them from `.env`; Docker Run uses `-e NAME=value`.
+
+| Settings | Defaults |
+|---|---|
+| `USER_ID`, `GROUP_ID` | Unraid and Compose defaults: `99`, `100`; generic Linux Docker Run: `1000`, `1000` (set these explicitly for generic Linux Compose) |
+| `TZ` | `Etc/UTC` |
+| `WEB_AUDIO`, `WEB_HOST_CLIPBOARD_SYNC`, `WEB_FILE_MANAGER` | `1` |
+| `WEB_FILE_MANAGER_ALLOWED_PATHS` | `AUTO` (common and mapped container paths); use a comma-separated list to restrict access |
+| `DARK_MODE`, `KEEP_APP_RUNNING` | `0`, `1` |
+| `DISPLAY_WIDTH`, `DISPLAY_HEIGHT` | `1920`, `1080`; browser resizing can adjust these later |
+| `WEB_LISTENING_PORT` | `5800`; leave unchanged for the supplied bridge configuration and image healthcheck |
+| `SECURE_CONNECTION`, `WEB_AUTHENTICATION` | `0`, `0`; see [security requirements](#network-access-and-security) before enabling |
+| `WEB_AUTHENTICATION_TOKEN_VALIDITY_TIME` | `24` hours |
+| `WEB_AUTHENTICATION_USERNAME`, `WEB_AUTHENTICATION_PASSWORD` | Empty; configure privately when enabling authentication |
 
 ## Image tags
 
@@ -207,6 +235,8 @@ The browser interface is provided by the jlesage noVNC-based GUI stack.
 - Native VNC is available on container port `5900`, but is not mapped by default.
 - The side panel provides audio, clipboard, scaling, quality, and logging controls.
 - Remote resizing adapts the virtual desktop to the browser window.
+- Host clipboard synchronization depends on browser support, clipboard permissions, and a secure browser context (HTTPS). The side-panel clipboard remains available for manual transfers.
+- Browser audio may need a click before playback is allowed.
 
 ## Files and persistence
 
@@ -216,6 +246,8 @@ The principal container paths are the same on Unraid and Docker:
 |---|---|---|
 | `/mnt/user/appdata/subtitleedit` | `/config` | Application settings, GUI state, OCR data, downloaded models, and GTK bookmarks |
 | `/mnt/user/data` | `/data` | Media and subtitle files |
+
+The Docker Run example uses `/srv/subtitleedit/config` and `/srv/media` on the host instead. Choose paths and IDs that allow the container to access your files.
 
 Correctly mapped `/config` and `/data` directories remain available when the container is updated or replaced.
 
@@ -266,7 +298,13 @@ docker compose up -d
 
 ## Network access and security
 
-The WebUI is intended for a trusted LAN, Tailscale, or a secured reverse proxy and should not be exposed directly to the public Internet. It uses HTTP without built-in authentication by default (`SECURE_CONNECTION=0`, `WEB_AUTHENTICATION=0`), although HTTPS and password authentication can be enabled through the corresponding container settings.
+The WebUI is intended for a trusted LAN, Tailscale, or a secured reverse proxy and should not be exposed directly to the public Internet. It uses HTTP without built-in authentication by default (`SECURE_CONNECTION=0`, `WEB_AUTHENTICATION=0`), with no credentials configured.
+
+For direct HTTPS, set `SECURE_CONNECTION=1` and open `https://HOST-IP:5800` (or your chosen host port). The container generates a self-signed certificate by default; configure a trusted certificate for normal browser trust. HTTPS encrypts the connection but does not enable login protection.
+
+To enable built-in login protection, also set `WEB_AUTHENTICATION=1` and configure a username and password privately, or use the persistent `/config/webauth-htpasswd` password database. Built-in authentication requires `SECURE_CONNECTION=1`; enabling authentication alone is insufficient. Session tokens default to 24 hours. Do not commit real credentials to this repository or share resolved configuration containing them.
+
+When a trusted reverse proxy handles HTTPS and access control, the container can retain its default HTTP/authentication settings on the trusted backend network. To use built-in authentication behind a proxy, configure HTTPS on the container backend as well. See the [jlesage security and authentication documentation](https://github.com/jlesage/docker-baseimage-gui#security) for certificate and credential setup.
 
 ## Support and development
 
